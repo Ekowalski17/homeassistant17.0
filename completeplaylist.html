@@ -1,0 +1,513 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>LoFi Playlist Player</title>
+
+<style>
+body{
+    margin:0;
+    background:#0f172a;
+    color:white;
+    font-family:Arial,sans-serif;
+    display:flex;
+    justify-content:center;
+    padding:30px;
+}
+
+.player{
+    width:700px;
+    background:#1e293b;
+    border-radius:20px;
+    padding:20px;
+}
+
+h1{
+    text-align:center;
+}
+
+#dropZone{
+    text-align:center;
+    padding:25px;
+    border:2px dashed #60a5fa;
+    border-radius:15px;
+    cursor:pointer;
+    background:#334155;
+}
+
+#dropZone:hover{
+    background:#475569;
+}
+
+audio{
+    width:100%;
+    margin-top:15px;
+}
+
+.controls{
+    display:flex;
+    gap:10px;
+    margin-top:15px;
+}
+
+.controls button{
+    flex:1;
+}
+
+button{
+    padding:12px;
+    border:none;
+    border-radius:10px;
+    background:#3b82f6;
+    color:white;
+    cursor:pointer;
+}
+
+button:hover{
+    background:#2563eb;
+}
+
+#playlist{
+    margin-top:20px;
+    max-height:350px;
+    overflow-y:auto;
+}
+
+.song{
+    display:flex;
+    justify-content:space-between;
+    align-items:center;
+    background:#334155;
+    margin:8px 0;
+    padding:12px;
+    border-radius:10px;
+}
+
+.song.active{
+    border:2px solid #60a5fa;
+}
+
+.song-name{
+    cursor:pointer;
+    flex:1;
+}
+
+.deleteBtn{
+    background:#ef4444;
+    width:auto;
+}
+
+.deleteBtn:hover{
+    background:#dc2626;
+}
+
+input[type=range]{
+    width:100%;
+}
+
+#nowPlaying{
+    margin-top:10px;
+    text-align:center;
+}
+</style>
+</head>
+<body>
+
+<div class="player">
+<h1>🎧 Lo‑Fi Playlist Player</h1>
+<div id="dropZone">
+    📁 Click or Drop MP3 Files Here
+    <input type="file" id="upload" multiple accept="audio/*" hidden>
+</div>
+<div id="nowPlaying">
+    No song selected
+</div>
+<audio id="audio" controls></audio>
+<div style="margin-top:10px;">
+    🔊 Volume
+    <input type="range" id="volume"
+           min="0" max="1"
+           step="0.01" value="1">
+</div>
+<div class="controls">
+    <button id="prevBtn">⏮ Prev</button>
+    <button id="playBtn">▶ Play</button>
+    <button id="nextBtn">⏭ Next</button>
+    <button id="shuffleBtn">🔀 Shuffle</button>
+</div>
+<button id="clearPlaylist" style="margin-top:15px;width:100%;">
+🗑 Clear Playlist
+</button>
+<div id="playlist"></div>
+</div>
+
+<script>
+
+const audio=document.getElementById("audio");
+const upload=document.getElementById("upload");
+const dropZone=document.getElementById("dropZone");
+const playlistDiv=document.getElementById("playlist");
+const nowPlaying=document.getElementById("nowPlaying");
+const volume=document.getElementById("volume");
+
+let db;
+let songs=[];
+let currentIndex=-1;
+
+const request=indexedDB.open("PlaylistDB",1);
+
+request.onupgradeneeded=e=>{
+    db=e.target.result;
+    db.createObjectStore("songs",{keyPath:"name"});
+};
+
+request.onsuccess=e=>{
+    db=e.target.result;
+
+    loadPlaylist();
+
+    const savedVol=
+        localStorage.getItem("volume");
+
+    if(savedVol){
+        audio.volume=savedVol;
+        volume.value=savedVol;
+    }
+};
+
+function saveSong(file){
+
+    const tx=db.transaction(
+        ["songs"],
+        "readwrite"
+    );
+
+    tx.objectStore("songs").put(file);
+
+    tx.oncomplete=()=>{
+        loadPlaylist();
+    };
+}
+
+function loadPlaylist(){
+
+    songs=[];
+
+    playlistDiv.innerHTML="";
+
+    const tx=db.transaction(
+        ["songs"],
+        "readonly"
+    );
+
+    const store=
+        tx.objectStore("songs");
+
+    store.getAll().onsuccess=e=>{
+
+        songs=e.target.result;
+
+        renderPlaylist();
+
+        restoreLastSong();
+    };
+}
+
+function renderPlaylist(){
+
+    playlistDiv.innerHTML="";
+
+    songs.forEach((file,index)=>{
+
+        const row=
+            document.createElement("div");
+
+        row.className="song";
+
+        if(index===currentIndex){
+            row.classList.add("active");
+        }
+
+        row.innerHTML=`
+            <div class="song-name">
+                🎵 ${file.name}
+            </div>
+            <button class="deleteBtn">
+                ✖
+            </button>
+        `;
+
+        row.querySelector(".song-name")
+           .onclick=()=>playSong(index);
+
+        row.querySelector(".deleteBtn")
+           .onclick=()=>deleteSong(file.name);
+
+        playlistDiv.appendChild(row);
+    });
+}
+
+function playSong(index){
+
+    currentIndex=index;
+
+    const file=songs[index];
+
+    audio.src=
+        URL.createObjectURL(file);
+
+    nowPlaying.textContent=
+        "🎵 "+file.name;
+
+    localStorage.setItem(
+        "currentSong",
+        file.name
+    );
+
+    audio.onloadedmetadata=()=>{
+
+        const savedSong=
+          localStorage.getItem(
+            "currentSong"
+          );
+
+        if(savedSong===file.name){
+
+            const pos=
+            localStorage.getItem(
+                "position"
+            );
+
+            if(pos){
+                audio.currentTime=
+                parseFloat(pos);
+            }
+        }
+    };
+
+    audio.play();
+
+    renderPlaylist();
+}
+
+function deleteSong(name){
+
+    const tx=db.transaction(
+        ["songs"],
+        "readwrite"
+    );
+
+    tx.objectStore("songs")
+      .delete(name);
+
+    tx.oncomplete=loadPlaylist;
+}
+
+function restoreLastSong(){
+
+    const lastSong=
+        localStorage.getItem(
+            "currentSong"
+        );
+
+    if(!lastSong) return;
+
+    const index=
+        songs.findIndex(
+            s=>s.name===lastSong
+        );
+
+    if(index>-1){
+
+        currentIndex=index;
+
+        const file=songs[index];
+
+        audio.src=
+            URL.createObjectURL(file);
+
+        nowPlaying.textContent=
+            "🎵 "+file.name;
+
+        renderPlaylist();
+
+        audio.onloadedmetadata=()=>{
+
+            const pos=
+                localStorage.getItem(
+                  "position"
+                );
+
+            if(pos){
+                audio.currentTime=
+                  parseFloat(pos);
+            }
+        };
+    }
+}
+
+function nextSong(){
+
+    if(songs.length===0) return;
+
+    currentIndex++;
+
+    if(currentIndex>=songs.length){
+        currentIndex=0;
+    }
+
+    playSong(currentIndex);
+}
+
+function previousSong(){
+
+    if(songs.length===0) return;
+
+    currentIndex--;
+
+    if(currentIndex<0){
+        currentIndex=songs.length-1;
+    }
+
+    playSong(currentIndex);
+}
+
+document
+.getElementById("nextBtn")
+.onclick=nextSong;
+
+document
+.getElementById("prevBtn")
+.onclick=previousSong;
+
+document
+.getElementById("shuffleBtn")
+.onclick=()=>{
+
+    if(songs.length===0) return;
+
+    const random=
+        Math.floor(
+            Math.random()*
+            songs.length
+        );
+
+    playSong(random);
+};
+
+document
+.getElementById("playBtn")
+.onclick=()=>{
+
+    if(audio.paused){
+        audio.play();
+    }else{
+        audio.pause();
+    }
+};
+
+audio.addEventListener(
+"play",
+()=>{
+document.getElementById("playBtn")
+.textContent="⏸ Pause";
+});
+
+audio.addEventListener(
+"pause",
+()=>{
+document.getElementById("playBtn")
+.textContent="▶ Play";
+});
+
+audio.addEventListener(
+"timeupdate",
+()=>{
+localStorage.setItem(
+"position",
+audio.currentTime
+);
+});
+
+audio.addEventListener(
+"ended",
+()=>{
+nextSong();
+});
+
+volume.addEventListener(
+"input",
+()=>{
+audio.volume=volume.value;
+
+localStorage.setItem(
+"volume",
+volume.value
+);
+});
+
+dropZone.onclick=()=>{
+upload.click();
+};
+
+upload.onchange=()=>{
+
+    [...upload.files]
+    .forEach(file=>saveSong(file));
+};
+
+dropZone.addEventListener(
+"dragover",
+e=>{
+e.preventDefault();
+});
+
+dropZone.addEventListener(
+"drop",
+e=>{
+
+e.preventDefault();
+
+[...e.dataTransfer.files]
+.forEach(file=>saveSong(file));
+});
+
+document
+.getElementById("clearPlaylist")
+.onclick=()=>{
+
+if(!confirm(
+"Delete entire playlist?"
+)) return;
+
+const tx=db.transaction(
+["songs"],
+"readwrite"
+);
+
+tx.objectStore("songs")
+.clear();
+
+localStorage.removeItem(
+"currentSong"
+);
+
+localStorage.removeItem(
+"position"
+);
+
+audio.src="";
+
+playlistDiv.innerHTML="";
+
+songs=[];
+
+nowPlaying.textContent=
+"No song selected";
+};
+
+</script>
+
+</body>
+</html>

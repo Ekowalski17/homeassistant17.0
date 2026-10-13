@@ -1,0 +1,184 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Lo-Fi Music Widget</title>
+
+<style>
+*{
+    box-sizing:border-box;
+    font-family:Arial, sans-serif;
+}
+
+body{
+    background: url("https://th.bing.com/th/id/R.304f49a35c30eed0b4b101562aa6951b?rik=jb32REneCwAbog&riu=http%3a%2f%2fgetwallpapers.com%2fwallpaper%2ffull%2f7%2f5%2f4%2f232708.jpg&ehk=f8gVJeyVONFjhf5gEvE1iTdBoMiX7eEIzen0BwzPMpM%3d&risl=&pid=ImgRaw&r=0") center center/cover no-repeat fixed;
+    display:flex;
+    justify-content:center;
+    align-items:center;
+    height:100vh;
+    margin:0;
+    color:white;
+}
+.widget{
+    width:450px;
+    background:transparent;
+    padding:25px;
+    border-radius:20px;
+    box-shadow:0 8px 20px rgba(0,0,0,.4);
+}
+h2{
+    text-align:center;
+    margin-top:0;
+}
+#dropZone{
+    border:2px dashed #60a5fa;
+    border-radius:15px;
+    padding:25px;
+    text-align:center;
+    cursor:pointer;
+    background:#334155;
+    transition:.3s;
+}
+#dropZone:hover{
+    background:#475569;
+}
+audio{
+    width:100%;
+    margin-top:15px;
+}
+.controls{
+    margin-top:15px;
+}
+input[type="range"]{
+    width:100%;
+}
+.info{
+    margin-top:15px;
+    text-align:center;
+}
+.indicator{
+    display:inline-block;
+    width:12px;
+    height:12px;
+    background:#22c55e;
+    border-radius:50%;
+    margin-right:6px;
+    animation:pulse 1s infinite;
+}
+@keyframes pulse{
+    0%{transform:scale(1);}
+    50%{transform:scale(1.3);}
+    100%{transform:scale(1);}
+}
+
+button{
+    width:100%;
+    padding:12px;
+    border:none;
+    border-radius:10px;
+    background:#3b82f6;
+    color:white;
+    cursor:pointer;
+    font-size:16px;
+    margin-top:10px;
+}
+button:hover{
+    background:#2563eb;
+}
+</style>
+</head>
+<body>
+
+<div class="widget">
+    <h2>🎧 Lo‑Fi Music Widget</h2>
+
+    <div id="dropZone">
+        🎵 Click Here or Drag & Drop an MP3 File
+        <input type="file" id="musicUpload" accept=".mp3,audio/*" hidden>
+    </div>
+    <audio id="player" controls loop></audio>
+    <button id="playPause">▶ Play</button>
+    <div class="controls">
+        <label>🔊 Volume</label>
+        <input type="range" id="volume" min="0" max="1" step="0.01" value="1">
+    </div>
+    <div class="info">
+        <span class="indicator"></span>
+        <span id="songName">No song loaded</span>
+    </div>
+</div>
+
+<script>
+const dropZone = document.getElementById("dropZone");
+const upload = document.getElementById("musicUpload");
+const player = document.getElementById("player");
+const songName = document.getElementById("songName");
+const volume = document.getElementById("volume");
+const playPause = document.getElementById("playPause");
+// Open file picker
+dropZone.addEventListener("click", () => {
+    upload.click();
+});
+// File picker upload
+upload.addEventListener("change", () => {
+    if(upload.files.length){
+        playSong(upload.files[0]);
+    }
+});
+// Drag over
+dropZone.addEventListener("dragover", (e) => {
+    e.preventDefault();
+    dropZone.style.background = "#475569";
+});
+// Drag leave
+dropZone.addEventListener("dragleave", () => {
+    dropZone.style.background = "#334155";
+});
+// Drop file
+dropZone.addEventListener("drop", (e) => {
+    e.preventDefault();
+    dropZone.style.background = "#334155";
+
+    const file = e.dataTransfer.files[0];
+
+    if(file){
+        playSong(file);
+    }
+});
+// Play song function
+function playSong(file){
+    const fileURL = URL.createObjectURL(file);
+
+    player.src = fileURL;
+    player.play();
+
+    songName.textContent = file.name;
+    dropZone.innerHTML =
+        "✅ Loaded: " + file.name +
+        '<input type="file" id="musicUpload" accept=".mp3,audio/*" hidden>';
+}
+// Volume
+volume.addEventListener("input", () => {
+    player.volume = volume.value;
+});
+// Play/Pause Button
+playPause.addEventListener("click", () => {
+    if(player.paused){
+        player.play();
+        playPause.textContent = "⏸ Pause";
+    }else{
+        player.pause();
+        playPause.textContent = "▶ Play";
+    }
+});
+player.addEventListener("play", () => {
+    playPause.textContent = "⏸ Pause";
+});
+player.addEventListener("pause", () => {
+    playPause.textContent = "▶ Play";
+});
+</script>
+
+</body>
+</html>
