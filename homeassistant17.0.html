@@ -645,6 +645,98 @@ li{
     background:#dc2626;
 }
 
+.pomo-body{
+    display:flex;
+    flex-direction:column;
+    align-items:center;
+}
+
+.pomo-modes{
+    display:flex;
+    gap:6px;
+    flex-wrap:wrap;
+    justify-content:center;
+}
+
+.speed-widget .pomo-modes button{
+    margin-top:0;
+    padding:6px 12px;
+    font-size:13px;
+    background:rgba(255,255,255,0.15);
+    color:white;
+    border:1px solid rgba(255,255,255,0.3);
+    border-radius:999px;
+}
+
+.speed-widget .pomo-modes button.active{
+    background:white;
+    color:#333;
+}
+
+.pomo-ring{
+    position:relative;
+    width:180px;
+    height:180px;
+    margin-top:14px;
+}
+
+.pomo-ring svg{
+    width:100%;
+    height:100%;
+    transform:rotate(-90deg);
+}
+
+.pomo-track{
+    fill:none;
+    stroke:rgba(255,255,255,0.18);
+    stroke-width:10;
+}
+
+.pomo-progress{
+    fill:none;
+    stroke:#34d399;
+    stroke-width:10;
+    stroke-linecap:round;
+    transition:stroke-dashoffset .5s linear, stroke .3s;
+}
+
+.pomo-progress.break{
+    stroke:#fbbf24;
+}
+
+.pomo-center{
+    position:absolute;
+    inset:0;
+    display:flex;
+    flex-direction:column;
+    align-items:center;
+    justify-content:center;
+}
+
+#pomoTime{
+    font-size:2.6rem;
+    font-weight:700;
+    font-variant-numeric:tabular-nums;
+}
+
+#pomoLabel{
+    font-size:13px;
+    color:#d1d5db;
+    text-transform:uppercase;
+    letter-spacing:1px;
+}
+
+.pomo-controls{
+    display:flex;
+    gap:8px;
+    justify-content:center;
+}
+
+.pomo-count{
+    margin-top:12px;
+    font-size:14px;
+    color:#d1d5db;
+}
 
 </style>
 </head>
@@ -669,7 +761,6 @@ li{
     <button id="themeToggle">🌙 Dark Mode</button>
     <button id="lockBtn" type="button" aria-pressed="false">Lock layout</button>
     <button id="resetBtn" type="button">Reset layout</button>
-    <span class="hint">Drag a title bar to move. Drag any edge or corner to resize.</span>
 </div>
 
 <div class="dashboard" id="board">
@@ -827,6 +918,38 @@ li{
             </div>
             <button id="musicClear">🗑 Clear Playlist</button>
             <div id="musicPlaylist"></div>
+        </div>
+    </div>
+</div>
+
+<!-- POMODORO TIMER -->
+<div class="widget" id="pomodoroWidget" data-h="400">
+    <div class="widget-inner">
+        <div class="widget-header" tabindex="0" aria-label="POMODORO TIMER. Drag to move, or use the arrow keys.">
+            <span class="title">🍅 POMODORO TIMER</span>
+        </div>
+        <div class="widget-body speed-widget pomo-body">
+            <div class="pomo-modes">
+                <button data-mode="focus" class="active">Focus</button>
+                <button data-mode="short">Short Break</button>
+                <button data-mode="long">Long Break</button>
+            </div>
+            <div class="pomo-ring">
+                <svg viewBox="0 0 120 120" aria-hidden="true">
+                    <circle class="pomo-track" cx="60" cy="60" r="52"></circle>
+                    <circle class="pomo-progress" id="pomoProgress" cx="60" cy="60" r="52"></circle>
+                </svg>
+                <div class="pomo-center">
+                    <div id="pomoTime" role="timer" aria-live="off">25:00</div>
+                    <div id="pomoLabel">Focus</div>
+                </div>
+            </div>
+            <div class="pomo-controls">
+                <button id="pomoStart">START</button>
+                <button id="pomoReset">RESET</button>
+                <button id="pomoSkip">SKIP</button>
+            </div>
+            <div class="pomo-count">🍅 Today: <span id="pomoCount">0</span> sessions</div>
         </div>
     </div>
 </div>
@@ -1744,6 +1867,134 @@ document.getElementById("musicClear").onclick = () => {
         defaultLayout();
     });
 })();
+
+const POMO_MINUTES = { focus: 25, short: 5, long: 15 };
+const POMO_LABELS = { focus: "Focus", short: "Short Break", long: "Long Break" };
+const POMO_LONG_EVERY = 4;   // long break after every 4 focus sessions
+
+const pomoTimeEl = document.getElementById("pomoTime");
+const pomoLabelEl = document.getElementById("pomoLabel");
+const pomoStartBtn = document.getElementById("pomoStart");
+const pomoProgress = document.getElementById("pomoProgress");
+const pomoCountEl = document.getElementById("pomoCount");
+const pomoModeBtns = document.querySelectorAll(".pomo-modes button");
+const POMO_CIRC = 2 * Math.PI * 52;
+pomoProgress.style.strokeDasharray = POMO_CIRC;
+
+let pomoMode = "focus";
+let pomoRemaining = POMO_MINUTES.focus * 60;
+let pomoEndTime = null;
+let pomoTimer = null;
+let pomoFocusDone = 0;   // focus sessions in the current cycle
+
+/* today's session count (resets each day) */
+function pomoLoadCount(){
+    try {
+        const saved = JSON.parse(localStorage.getItem("pomodoroCount"));
+        if (saved && saved.date === new Date().toDateString()) return saved.count;
+    } catch(e){}
+    return 0;
+}
+let pomoCount = pomoLoadCount();
+function pomoSaveCount(){
+    try {
+        localStorage.setItem("pomodoroCount", JSON.stringify({
+            date: new Date().toDateString(),
+            count: pomoCount
+        }));
+    } catch(e){}
+    pomoCountEl.textContent = pomoCount;
+}
+
+function pomoRender(){
+    const m = Math.floor(pomoRemaining / 60);
+    const s = pomoRemaining % 60;
+    const text = String(m).padStart(2, "0") + ":" + String(s).padStart(2, "0");
+    pomoTimeEl.textContent = text;
+    pomoLabelEl.textContent = POMO_LABELS[pomoMode];
+    const total = POMO_MINUTES[pomoMode] * 60;
+    pomoProgress.style.strokeDashoffset = POMO_CIRC * (1 - pomoRemaining / total);
+    pomoProgress.classList.toggle("break", pomoMode !== "focus");
+    pomoModeBtns.forEach(b => b.classList.toggle("active", b.dataset.mode === pomoMode));
+    document.title = pomoTimer
+        ? `${text} · ${POMO_LABELS[pomoMode]}`
+        : "MY HOME ASSISTANT";
+}
+
+function pomoChime(){
+    const ctx = new (window.AudioContext || window.webkitAudioContext)();
+    [523.25, 659.25, 783.99].forEach((freq, i) => {
+        const osc = ctx.createOscillator();
+        const gain = ctx.createGain();
+        osc.connect(gain);
+        gain.connect(ctx.destination);
+        osc.type = "sine";
+        osc.frequency.value = freq;
+        const t = ctx.currentTime + i * 0.2;
+        gain.gain.setValueAtTime(0.08, t);
+        gain.gain.exponentialRampToValueAtTime(0.001, t + 0.6);
+        osc.start(t);
+        osc.stop(t + 0.6);
+    });
+}
+
+function pomoSetMode(mode){
+    pomoPause();
+    pomoMode = mode;
+    pomoRemaining = POMO_MINUTES[mode] * 60;
+    pomoRender();
+}
+
+function pomoTick(){
+    pomoRemaining = Math.max(0, Math.round((pomoEndTime - Date.now()) / 1000));
+    pomoRender();
+    if (pomoRemaining === 0) pomoFinish(true);
+}
+
+function pomoStart(){
+    if (pomoTimer) return;
+    pomoEndTime = Date.now() + pomoRemaining * 1000;
+    pomoTimer = setInterval(pomoTick, 250);
+    pomoStartBtn.textContent = "PAUSE";
+    pomoRender();
+}
+
+function pomoPause(){
+    clearInterval(pomoTimer);
+    pomoTimer = null;
+    pomoStartBtn.textContent = "START";
+    pomoRender();
+}
+
+/* move to the next phase: focus → break → focus ... */
+function pomoFinish(completed){
+    pomoPause();
+    if (completed) pomoChime();
+    if (pomoMode === "focus"){
+        if (completed){
+            pomoCount++;
+            pomoSaveCount();
+        }
+        pomoFocusDone++;
+        if (pomoFocusDone >= POMO_LONG_EVERY){
+            pomoFocusDone = 0;
+            pomoSetMode("long");
+        } else {
+            pomoSetMode("short");
+        }
+    } else {
+        pomoSetMode("focus");
+    }
+}
+
+pomoStartBtn.onclick = () => pomoTimer ? pomoPause() : pomoStart();
+document.getElementById("pomoReset").onclick = () => pomoSetMode(pomoMode);
+document.getElementById("pomoSkip").onclick = () => pomoFinish(false);
+pomoModeBtns.forEach(b => b.onclick = () => pomoSetMode(b.dataset.mode));
+
+pomoCountEl.textContent = pomoCount;
+pomoRender();
+
 </script>
 
 </body>
