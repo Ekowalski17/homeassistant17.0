@@ -798,6 +798,99 @@ li{
 #thSettings .th-btns{ display:flex; gap:8px; margin-top:16px; justify-content:flex-end; }
 #thSettings button{ margin:0; padding:8px 14px; border:0; border-radius:10px; background:#3a4150; color:white; cursor:pointer; }
 #thSettings button.primary{ background:#4caf50; }
+/* TIMER */
+#timerWidget .tm-body{ display:flex; flex-direction:column; align-items:center; }
+#timerWidget button{
+    margin:0; padding:8px 14px; border:1px solid rgba(255,255,255,0.3); border-radius:999px;
+    background:rgba(255,255,255,0.15); color:white; font-size:13px; cursor:pointer;
+}
+#timerWidget button.on, #timerWidget .tm-controls button{ background:white; color:#333; border-color:white; }
+#timerWidget .tm-presets{ display:flex; gap:6px; flex-wrap:wrap; justify-content:center; }
+#timerWidget .tm-ring{ position:relative; width:170px; height:170px; margin-top:12px; }
+#timerWidget .tm-ring svg{ width:100%; height:100%; transform:rotate(-90deg); }
+#timerWidget .tm-track{ fill:none; stroke:rgba(255,255,255,0.18); stroke-width:10; }
+#timerWidget .tm-progress{ fill:none; stroke:#60a5fa; stroke-width:10; stroke-linecap:round; transition:stroke-dashoffset .3s linear; }
+#timerWidget .tm-progress.done{ stroke:#f87171; animation:tmFlash 1s ease-in-out infinite; }
+@keyframes tmFlash{ 50%{ opacity:.3; } }
+#timerWidget .tm-center{ position:absolute; inset:0; display:flex; flex-direction:column; align-items:center; justify-content:center; }
+#tmTime{ font-size:2.4rem; font-weight:700; font-variant-numeric:tabular-nums; }
+#tmLabel{ font-size:13px; color:#d1d5db; text-transform:uppercase; letter-spacing:1px; }
+#timerWidget .tm-custom{ display:flex; align-items:center; gap:6px; margin-top:10px; font-size:13px; }
+#timerWidget .tm-custom input{
+    width:56px; padding:6px; border-radius:8px; border:1px solid rgba(255,255,255,0.3);
+    background:rgba(255,255,255,0.15); color:white; text-align:center; font:inherit;
+}
+#timerWidget .tm-controls{ display:flex; gap:8px; margin-top:12px; }
+#timerWidget .tm-controls button{ padding:10px 20px; border-radius:10px; }
+/* COOKING TIMERS */
+#cookWidget button{
+    margin:0; padding:6px 12px; border:1px solid rgba(255,255,255,0.3); border-radius:999px;
+    background:rgba(255,255,255,0.15); color:white; font-size:13px; cursor:pointer;
+}
+#cookWidget .ck-add{ display:flex; align-items:center; gap:6px; font-size:13px; }
+#cookWidget .ck-add input{
+    padding:8px; border-radius:8px; border:1px solid rgba(255,255,255,0.3);
+    background:rgba(255,255,255,0.15); color:white; font:inherit;
+}
+#cookWidget .ck-add input::placeholder{ color:rgba(255,255,255,0.7); }
+#cookWidget #ckName{ flex:1; min-width:0; width:auto; }
+#cookWidget .ck-set{ display:flex; align-items:center; justify-content:center; gap:10px; margin-top:10px; }
+#cookWidget .ck-step{ width:40px; height:40px; padding:0; font-size:22px; line-height:1; }
+#cookWidget .ck-set-val{ min-width:86px; font-size:13px; }
+#cookWidget #ckMinShow{ font-size:1.8rem; font-weight:700; font-variant-numeric:tabular-nums; }
+#cookWidget #ckAddBtn{ background:white; color:#333; border-color:white; font-weight:700; padding:10px 16px; border-radius:10px; }
+#ckList{ margin-top:12px; display:grid; gap:10px; }
+#ckEmpty{ margin-top:14px; font-size:13px; color:#d1d5db; }
+#cookWidget .ck-card{
+    background:rgba(0,0,0,0.22); border:1px solid rgba(255,255,255,0.18);
+    border-radius:14px; padding:10px 12px; text-align:left;
+}
+#cookWidget .ck-top{ display:flex; align-items:center; justify-content:space-between; gap:8px; }
+#cookWidget .ck-name{ font-weight:700; overflow:hidden; text-overflow:ellipsis; white-space:nowrap; }
+#cookWidget .ck-time{ font-size:1.7rem; font-weight:700; font-variant-numeric:tabular-nums; }
+#cookWidget .ck-bar{ height:6px; border-radius:999px; background:rgba(255,255,255,0.18); margin:6px 0 8px; overflow:hidden; }
+#cookWidget .ck-fill{ height:100%; background:#fbbf24; border-radius:inherit; transition:width .3s linear; }
+#cookWidget .ck-btns{ display:flex; gap:6px; flex-wrap:wrap; }
+#cookWidget .ck-btns .ck-remove{ margin-left:auto; }
+#cookWidget .ck-card.paused .ck-time{ opacity:.6; }
+#cookWidget .ck-card.done{ border-color:#f87171; animation:ckFlash 1s ease-in-out infinite; }
+#cookWidget .ck-card.done .ck-fill{ background:#f87171; }
+@keyframes ckFlash{ 50%{ background:rgba(248,113,113,0.35); } }
+/* lions STATS */
+#lionsWidget button.on{ background:white; color:#333; border-color:white; font-weight:700; }
+#lionsWidget .li-team{ display:flex; align-items:center; justify-content:center; gap:12px; text-align:left; }
+#lionsWidget .li-logo{ width:58px; height:58px; }
+#lionsWidget .li-record{ font-size:1.6rem; font-weight:700; line-height:1.1; }
+#lionsWidget .li-sub{ font-size:12px; color:#d1d5db; }
+#lionsWidget .li-tiles{ display:grid; grid-template-columns:repeat(3, 1fr); gap:6px; margin-top:12px; }
+#lionsWidget .li-tile{ background:rgba(0,0,0,0.22); border-radius:10px; padding:6px 4px; }
+#lionsWidget .li-tile b{ display:block; font-size:1.1rem; }
+#lionsWidget .li-tile span{ font-size:11px; color:#d1d5db; text-transform:uppercase; letter-spacing:.5px; }
+#lionsWidget .li-games{ display:grid; grid-template-columns:1fr 1fr; gap:8px; margin-top:10px; }
+#lionsWidget .li-game{ background:rgba(0,0,0,0.22); border:1px solid rgba(255,255,255,0.15); border-radius:12px; padding:8px; }
+#lionsWidget .li-game.live{ grid-column:1 / -1; border-color:var(--li-blue); background:rgba(0,118,182,0.35); }
+#lionsWidget .li-game-label{ font-size:11px; color:#d1d5db; text-transform:uppercase; letter-spacing:1px; }
+#lionsWidget .li-game.live .li-game-label{ color:#93c5fd; font-weight:700; }
+#lionsWidget .li-matchup{ display:flex; align-items:center; justify-content:center; gap:6px; margin:4px 0 2px; font-weight:700; }
+#lionsWidget .li-matchup img{ width:28px; height:28px; }
+#lionsWidget .li-game.live .li-matchup{ font-size:1.5rem; }
+#lionsWidget .li-game.live .li-matchup img{ width:40px; height:40px; }
+#lionsWidget .li-result{ font-size:12px; color:#d1d5db; }
+#lionsWidget .li-sit{ font-size:12px; margin-top:2px; }
+#lionsWidget .li-w{ color:#34d399; font-weight:700; }
+#lionsWidget .li-l{ color:#f87171; font-weight:700; }
+#lionsWidget .li-tabs{ display:flex; gap:6px; justify-content:center; margin-top:12px; }
+#lionsWidget .li-leaders{ margin-top:8px; text-align:left; }
+#lionsWidget .li-row{
+    display:flex; align-items:center; gap:10px; padding:6px 8px; margin:4px 0;
+    background:rgba(0,0,0,0.22); border-radius:10px; font-size:14px;
+}
+#lionsWidget .li-row img{ width:30px; height:30px; border-radius:50%; background:rgba(255,255,255,0.15); object-fit:cover; }
+#lionsWidget .li-row .li-name{ flex:1; overflow:hidden; text-overflow:ellipsis; white-space:nowrap; }
+#lionsWidget .li-row .li-cat{ display:block; font-size:11px; color:#d1d5db; }
+#lionsWidget .li-row .li-big{ font-weight:700; font-size:15px; text-align:right; }
+#lionsWidget .li-updated{ margin-top:10px; font-size:11px; color:#d1d5db; }
+#lionsWidget .li-error{ color:#fca5a5; font-size:13px; padding:10px 0; }
 </style>
 </head>
 <body>
@@ -974,24 +1067,6 @@ li{
     </div>
 </div>
 
-<!-- LPGA LIVE LEADERBOARD -->
-<div class="widget" id="lpgaWidget" data-h="440">
-    <div class="widget-inner">
-        <div class="widget-header" tabindex="0" aria-label="LPGA LIVE LEADERBOARD. Drag to move, or use the arrow keys.">
-            <span class="title">🏌️ LPGA Live Leaderboard</span>
-        </div>
-        <div class="widget-body speed-widget">
-            <div id="tournamentName" class="tournament">
-                Loading Tournament...
-            </div>
-            <div id="leaderboard">
-                <div class="loading">Loading leaderboard...</div>
-            </div>
-            <div id="updatedTime" class="timestamp"></div>
-        </div>
-    </div>
-</div>
-
 <!-- MUSIC PLAYER -->
 <div class="widget" id="musicWidget" data-h="520">
     <div class="widget-inner">
@@ -1016,6 +1091,108 @@ li{
             </div>
             <button id="musicClear">🗑 Clear Playlist</button>
             <div id="musicPlaylist"></div>
+        </div>
+    </div>
+</div>
+
+<!-- TIMER -->
+<div class="widget" id="timerWidget" data-h="420">
+    <div class="widget-inner">
+        <div class="widget-header" tabindex="0" aria-label="TIMER. Drag to move, or use the arrow keys.">
+            <span class="title">⏱️ TIMER</span>
+        </div>
+        <div class="widget-body speed-widget tm-body">
+            <div class="tm-presets">
+                <button data-min="1">1 min</button>
+                <button data-min="5">5 min</button>
+                <button data-min="10">10 min</button>
+                <button data-min="15">15 min</button>
+            </div>
+            <div class="tm-ring">
+                <svg viewBox="0 0 120 120" aria-hidden="true">
+                    <circle class="tm-track" cx="60" cy="60" r="52"></circle>
+                    <circle class="tm-progress" id="tmProgress" cx="60" cy="60" r="52"></circle>
+                </svg>
+                <div class="tm-center">
+                    <div id="tmTime" role="timer">05:00</div>
+                    <div id="tmLabel">Ready</div>
+                </div>
+            </div>
+            <div class="tm-custom">
+                <input type="number" id="tmMin" min="0" max="999" value="5" aria-label="Minutes"> min
+                <input type="number" id="tmSec" min="0" max="59" value="0" aria-label="Seconds"> sec
+                <button id="tmSet">SET</button>
+            </div>
+            <div class="tm-controls">
+                <button id="tmStart">START</button>
+                <button id="tmReset">RESET</button>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- COOKING TIMERS -->
+<div class="widget" id="cookWidget" data-h="480">
+    <div class="widget-inner">
+        <div class="widget-header" tabindex="0" aria-label="COOKING TIMERS. Drag to move, or use the arrow keys.">
+            <span class="title">🍳 COOKING TIMERS</span>
+        </div>
+        <div class="widget-body speed-widget ck-body">
+            <div class="ck-add">
+                <input type="text" id="ckName" placeholder="What's cooking? (optional)" maxlength="24" aria-label="Timer name">
+            </div>
+            <div class="ck-set">
+                <button id="ckDown" class="ck-step" aria-label="One minute less">−</button>
+                <div class="ck-set-val"><span id="ckMinShow">10</span> min</div>
+                <button id="ckUp" class="ck-step" aria-label="One minute more">+</button>
+                <button id="ckAddBtn">START</button>
+            </div>
+            <div id="ckList"></div>
+            <div id="ckEmpty">No timers yet. Pick the minutes and press START.</div>
+        </div>
+    </div>
+</div>
+
+
+<!-- LIONS STATS -->
+<div class="widget" id="lionsWidget" data-h="560">
+    <div class="widget-inner">
+        <div class="widget-header" tabindex="0" aria-label="DETROIT LIONS STATS. Drag to move, or use the arrow keys.">
+            <span class="title">🏈 DETROIT LIONS</span>
+        </div>
+        <div class="widget-body speed-widget li-body">
+            <div class="li-team">
+                <img class="li-logo" src="https://a.espncdn.com/i/teamlogos/nfl/500/det.png" alt="Lions logo">
+                <div>
+                    <div class="li-record" id="liRecord">Loading…</div>
+                    <div class="li-sub" id="liStanding"></div>
+                </div>
+            </div>
+            <div class="li-tiles" id="liTiles"></div>
+            <div class="li-games" id="liGames"></div>
+            <div class="li-tabs" id="liTabs">
+                <button data-tab="offense" class="on">Offense</button>
+                <button data-tab="defense">Defense</button>
+            </div>
+            <div class="li-leaders" id="liLeaders"></div>
+            <div class="li-updated" id="liUpdated"></div>
+        </div>
+    </div>
+</div>
+<!-- LPGA LIVE LEADERBOARD -->
+<div class="widget" id="lpgaWidget" data-h="440">
+    <div class="widget-inner">
+        <div class="widget-header" tabindex="0" aria-label="LPGA LIVE LEADERBOARD. Drag to move, or use the arrow keys.">
+            <span class="title">🏌️ LPGA Live Leaderboard</span>
+        </div>
+        <div class="widget-body speed-widget">
+            <div id="tournamentName" class="tournament">
+                Loading Tournament...
+            </div>
+            <div id="leaderboard">
+                <div class="loading">Loading leaderboard...</div>
+            </div>
+            <div id="updatedTime" class="timestamp"></div>
         </div>
     </div>
 </div>
@@ -1051,6 +1228,7 @@ li{
         </div>
     </div>
 </div>
+
 
 </div>
 <script>
@@ -2334,6 +2512,403 @@ pomoRender();
         pollTimer = setInterval(refresh, (cfg.POLL_SECONDS || 10) * 1000);
     }
     start(st.demo);
+})();
+</script>
+
+<script>
+/* TIMER */
+(function(){
+    const timeEl = document.getElementById("tmTime");
+    const labelEl = document.getElementById("tmLabel");
+    const ring = document.getElementById("tmProgress");
+    const startBtn = document.getElementById("tmStart");
+    const minIn = document.getElementById("tmMin");
+    const secIn = document.getElementById("tmSec");
+    const presetBtns = document.querySelectorAll("#timerWidget .tm-presets button");
+    const CIRC = 2 * Math.PI * 52;
+    ring.style.strokeDasharray = CIRC;
+
+    let total = 5 * 60, remaining = total, endTime = null, ticker = null, alarm = null;
+
+    function render(){
+        const h = Math.floor(remaining / 3600), m = Math.floor(remaining % 3600 / 60), s = remaining % 60;
+        const pad = n => String(n).padStart(2, "0");
+        timeEl.textContent = h ? `${h}:${pad(m)}:${pad(s)}` : `${pad(m)}:${pad(s)}`;
+        ring.style.strokeDashoffset = total ? CIRC * (1 - remaining / total) : 0;
+    }
+
+    function beep(){
+        const ctx = new (window.AudioContext || window.webkitAudioContext)();
+        [880, 880, 880].forEach((f, i) => {
+            const o = ctx.createOscillator(), g = ctx.createGain();
+            o.connect(g); g.connect(ctx.destination);
+            o.frequency.value = f;
+            const t = ctx.currentTime + i * 0.3;
+            g.gain.setValueAtTime(0.1, t);
+            g.gain.exponentialRampToValueAtTime(0.001, t + 0.25);
+            o.start(t); o.stop(t + 0.25);
+        });
+    }
+
+    function stopAlarm(){
+        clearInterval(alarm); alarm = null;
+        ring.classList.remove("done");
+    }
+
+    function setTime(seconds){
+        pause(); stopAlarm();
+        total = remaining = Math.max(0, Math.round(seconds));
+        labelEl.textContent = "Ready";
+        presetBtns.forEach(b => b.classList.toggle("on", +b.dataset.min * 60 === total));
+        render();
+    }
+
+    function start(){
+        if (ticker || remaining <= 0) return;
+        stopAlarm();
+        endTime = Date.now() + remaining * 1000;
+        ticker = setInterval(tick, 250);
+        startBtn.textContent = "PAUSE";
+        labelEl.textContent = "Running";
+    }
+
+    function pause(){
+        clearInterval(ticker); ticker = null;
+        startBtn.textContent = "START";
+        if (remaining > 0 && remaining < total) labelEl.textContent = "Paused";
+    }
+
+    function tick(){
+        remaining = Math.max(0, Math.ceil((endTime - Date.now()) / 1000));
+        render();
+        if (remaining === 0){
+            pause();
+            labelEl.textContent = "Time's up!";
+            ring.classList.add("done");
+            beep();
+            let count = 0;   // beep 5 times, or until Reset / Start is pressed
+            alarm = setInterval(() => { if (++count >= 5) stopAlarm(); else beep(); }, 2000);
+        }
+    }
+
+    startBtn.onclick = () => ticker ? pause() : start();
+    document.getElementById("tmReset").onclick = () => setTime(total);
+    document.getElementById("tmSet").onclick = () =>
+        setTime((parseInt(minIn.value) || 0) * 60 + Math.min(59, parseInt(secIn.value) || 0));
+    presetBtns.forEach(b => b.onclick = () => {
+        minIn.value = b.dataset.min; secIn.value = 0;
+        setTime(+b.dataset.min * 60);
+    });
+
+    setTime(total);
+})();
+</script>
+
+<script>
+/* COOKING TIMERS */
+(function(){
+    const list = document.getElementById("ckList");
+    const empty = document.getElementById("ckEmpty");
+    const nameIn = document.getElementById("ckName");
+    const minShow = document.getElementById("ckMinShow");
+    let setMinutes = 10;
+    let timers = [], nextId = 1, alarmTimer = null;
+
+    const pad = n => String(n).padStart(2, "0");
+    function fmt(sec){
+        const h = Math.floor(sec / 3600), m = Math.floor(sec % 3600 / 60), s = sec % 60;
+        return h ? `${h}:${pad(m)}:${pad(s)}` : `${pad(m)}:${pad(s)}`;
+    }
+    function left(t){ return t.running ? Math.max(0, Math.ceil((t.endTime - Date.now()) / 1000)) : t.remaining; }
+    function esc(s){ const d = document.createElement("div"); d.textContent = s; return d.innerHTML; }
+
+    function beep(){
+        const ctx = new (window.AudioContext || window.webkitAudioContext)();
+        [988, 784, 988].forEach((f, i) => {
+            const o = ctx.createOscillator(), g = ctx.createGain();
+            o.connect(g); g.connect(ctx.destination);
+            o.frequency.value = f;
+            const t = ctx.currentTime + i * 0.25;
+            g.gain.setValueAtTime(0.1, t);
+            g.gain.exponentialRampToValueAtTime(0.001, t + 0.22);
+            o.start(t); o.stop(t + 0.22);
+        });
+    }
+    /* keep beeping every 2 seconds while any timer is done (up to 1 minute each) */
+    function updateAlarm(){
+        const ringing = timers.some(t => t.done && Date.now() - t.doneAt < 60000);
+        if (ringing && !alarmTimer){ beep(); alarmTimer = setInterval(() => { updateAlarm(); if (alarmTimer) beep(); }, 2000); }
+        if (!ringing && alarmTimer){ clearInterval(alarmTimer); alarmTimer = null; }
+    }
+
+    function addTimer(name, minutes){
+        const sec = Math.round(minutes * 60);
+        if (!(sec > 0)) return;
+        timers.push({ id:nextId++, name:name || "Timer", total:sec, remaining:sec,
+                      endTime:Date.now() + sec * 1000, running:true, done:false });
+        render();
+    }
+
+    function render(){
+        empty.style.display = timers.length ? "none" : "block";
+        list.innerHTML = timers.map(t => `
+            <div class="ck-card" data-id="${t.id}">
+                <div class="ck-top">
+                    <span class="ck-name">${esc(t.name)}</span>
+                    <span class="ck-time"></span>
+                </div>
+                <div class="ck-bar"><div class="ck-fill"></div></div>
+                <div class="ck-btns">
+                    <button data-act="minus">−1 min</button>
+                    <button data-act="plus">+1 min</button>
+                    <button data-act="toggle"></button>
+                    <button data-act="remove" class="ck-remove" aria-label="Remove timer">✕</button>
+                </div>
+            </div>`).join("");
+        update();
+    }
+
+    /* refresh the numbers without rebuilding the buttons */
+    function update(){
+        timers.forEach(t => {
+            const card = list.querySelector(`[data-id="${t.id}"]`);
+            if (!card) return;
+            const sec = left(t);
+            if (t.running && sec === 0 && !t.done){
+                t.running = false; t.remaining = 0; t.done = true; t.doneAt = Date.now();
+            }
+            card.querySelector(".ck-time").textContent = t.done ? "Done!" : fmt(sec);
+            card.querySelector(".ck-fill").style.width = (t.done ? 100 : 100 * (1 - sec / t.total)) + "%";
+            card.querySelector('[data-act="toggle"]').textContent = t.done ? "Restart" : t.running ? "Pause" : "Resume";
+            card.classList.toggle("done", t.done);
+            card.classList.toggle("paused", !t.running && !t.done);
+        });
+        updateAlarm();
+    }
+
+    list.addEventListener("click", e => {
+        const btn = e.target.closest("button[data-act]");
+        if (!btn) return;
+        const t = timers.find(x => x.id === +btn.closest(".ck-card").dataset.id);
+        if (!t) return;
+        const act = btn.dataset.act;
+        if (act === "remove"){ timers = timers.filter(x => x !== t); render(); return; }
+        if (act === "toggle"){
+            if (t.done){ t.done = false; t.remaining = t.total; t.endTime = Date.now() + t.total * 1000; t.running = true; }
+            else if (t.running){ t.remaining = left(t); t.running = false; }
+            else { t.endTime = Date.now() + t.remaining * 1000; t.running = true; }
+        }
+        if (act === "plus" || act === "minus"){
+            const delta = act === "plus" ? 60 : -60;
+            if (t.done){ if (delta < 0) return; t.done = false; t.remaining = 60; t.total = 60; t.endTime = Date.now() + 60000; t.running = true; }
+            else {
+                const now = Math.max(0, left(t) + delta);
+                if (t.running) t.endTime = Date.now() + now * 1000; else t.remaining = now;
+                t.total = Math.max(t.total + (delta > 0 ? 60 : 0), now, 1);
+            }
+        }
+        update();
+    });
+
+    /* minute picker: tap − / +, or hold to change faster */
+    function changeMinutes(d){
+        setMinutes = Math.min(600, Math.max(1, setMinutes + d));
+        minShow.textContent = setMinutes;
+    }
+    [["ckDown", -1], ["ckUp", 1]].forEach(([id, d]) => {
+        const b = document.getElementById(id);
+        let hold = null, repeat = null;
+        const stop = () => { clearTimeout(hold); clearInterval(repeat); };
+        b.addEventListener("pointerdown", () => {
+            changeMinutes(d);
+            hold = setTimeout(() => { repeat = setInterval(() => changeMinutes(d * 5), 150); }, 500);
+        });
+        ["pointerup", "pointerleave", "pointercancel"].forEach(ev => b.addEventListener(ev, stop));
+    });
+
+    document.getElementById("ckAddBtn").onclick = () => {
+        addTimer(nameIn.value.trim(), setMinutes);
+        nameIn.value = "";
+    };
+    nameIn.addEventListener("keypress", e => { if (e.key === "Enter") document.getElementById("ckAddBtn").click(); });
+
+    setInterval(update, 250);
+    render();
+})();
+</script>
+
+
+<script>
+/* DETROIT LIONS STATS (data from ESPN's public sports API) */
+(function(){
+    const TEAM = "DET", TEAM_ID = 8;    // Lions = DET / 8
+    const SITE = "https://site.api.espn.com/apis/site/v2/sports/football/nfl";
+    const CORE = "https://sports.core.api.espn.com/v2/sports/football/leagues/nfl";
+    const $ = id => document.getElementById(id);
+    const LEADERS = {
+        offense: [["passingYards", "Passing yds"], ["rushingYards", "Rushing yds"], ["receivingYards", "Receiving yds"]],
+        defense: [["totalTackles", "Tackles"], ["sacks", "Sacks"], ["interceptions", "Interceptions"]]
+    };
+    let team = null, games = [], live = null, leaders = {}, athletes = {};
+    let tab = "offense", timer = null, leadersLoadedAt = 0;
+
+    const esc = s => String(s ?? "").replace(/[&<>"]/g, c => ({ "&":"&amp;", "<":"&lt;", ">":"&gt;", '"':"&quot;" }[c]));
+    const https = u => String(u || "").replace(/^http:/, "https:");
+    const getJSON = url => fetch(https(url)).then(r => { if (!r.ok) throw new Error(r.status); return r.json(); });
+    const score = c => c?.score == null ? "" : typeof c.score === "object" ? (c.score.displayValue ?? c.score.value) : c.score;
+    const logo = t => t?.logo || t?.logos?.[0]?.href || "";
+    const sides = comp => {
+        const cs = comp?.competitors || [];
+        const us = cs.find(c => c.team?.abbreviation === TEAM), them = cs.find(c => c.team?.abbreviation !== TEAM);
+        return { us, them, home: cs.find(c => c.homeAway === "home"), away: cs.find(c => c.homeAway === "away") };
+    };
+
+    async function load(){
+        try {
+            const [sched, board] = await Promise.all([
+                getJSON(`${SITE}/teams/${TEAM.toLowerCase()}/schedule`),
+                getJSON(`${SITE}/scoreboard`).catch(() => null)
+            ]);
+            team = sched.team || {};
+            games = sched.events || [];
+            live = (board?.events || []).find(e => e.status?.type?.state === "in" &&
+                    e.competitions?.[0]?.competitors?.some(c => c.team?.abbreviation === TEAM)) || null;
+            render();
+            $("liUpdated").textContent = "Updated " + new Date().toLocaleTimeString([], { hour:"numeric", minute:"2-digit" });
+
+            /* player leaders change less often: refresh every 30 minutes */
+            if (Date.now() - leadersLoadedAt > 30 * 60000) loadLeaders(sched.season?.year, sched.season?.type);
+        } catch(e){
+            console.error("Lions widget:", e);
+            if (!team){
+                $("liRecord").textContent = "Stats unavailable";
+                $("liLeaders").innerHTML = `<div class="li-error">Couldn't reach ESPN. Check your internet connection. It will try again automatically.</div>`;
+            }
+        }
+        clearTimeout(timer);
+        timer = setTimeout(load, live ? 30000 : 600000);   // 30 sec during a game, else 10 min
+    }
+
+    async function loadLeaders(year, type){
+        if (!year) return;
+        const seasonType = type === 3 ? 3 : 2;   // regular season, or playoffs once they start
+        try {
+            const res = await getJSON(`${CORE}/seasons/${year}/types/${seasonType}/teams/${TEAM_ID}/leaders`);
+            const wanted = [...LEADERS.offense, ...LEADERS.defense].map(x => x[0]);
+            const found = {};
+            (res.categories || []).forEach(c => { if (wanted.includes(c.name) && c.leaders?.[0]) found[c.name] = c.leaders[0]; });
+            await Promise.all(Object.values(found).map(async l => {
+                const ref = l.athlete?.$ref;
+                if (ref && !athletes[ref]) athletes[ref] = await getJSON(ref).catch(() => ({}));
+            }));
+            leaders = found;
+            leadersLoadedAt = Date.now();
+            renderLeaders();
+        } catch(e){
+            console.error("Lions leaders:", e);
+            if (!Object.keys(leaders).length) $("liLeaders").innerHTML = `<div class="li-error" style="color:#d1d5db">Player leaders unavailable right now.</div>`;
+        }
+    }
+
+    const done = e => e.competitions?.[0]?.status?.type?.completed || e.status?.type?.completed;
+
+    function render(){
+        $("liRecord").textContent = team.recordSummary || "0-0";
+        const finished = games.filter(done);
+
+        /* totals worked out from the season's completed games */
+        let pf = 0, pa = 0, hw = 0, hl = 0, aw = 0, al = 0, streak = "";
+        finished.forEach(e => {
+            const { us, them } = sides(e.competitions[0]);
+            if (!us || !them) return;
+            const a = +score(us), b = +score(them);
+            pf += a; pa += b;
+            const won = a > b;
+            if (us.homeAway === "home"){ won ? hw++ : a < b && hl++; } else { won ? aw++ : a < b && al++; }
+        });
+        if (finished.length){
+            const res = finished.map(e => { const { us, them } = sides(e.competitions[0]); return +score(us) > +score(them) ? "W" : +score(us) < +score(them) ? "L" : "T"; });
+            const lastR = res[res.length - 1]; let n = 0;
+            for (let i = res.length - 1; i >= 0 && res[i] === lastR; i--) n++;
+            streak = lastR + n;
+        }
+        $("liStanding").textContent = (team.standingSummary || "") + (streak ? ` · Streak ${streak}` : "");
+        const diff = pf - pa;
+        $("liTiles").innerHTML = [
+            ["PF", pf], ["PA", pa], ["DIFF", diff > 0 ? "+" + diff : diff],
+            ["HOME", `${hw}-${hl}`], ["AWAY", `${aw}-${al}`],
+            ["PPG", finished.length ? (pf / finished.length).toFixed(1) : "–"]
+        ].map(([k, v]) => `<div class="li-tile"><b>${esc(v)}</b><span>${k}</span></div>`).join("");
+
+        const last = [...finished].pop();
+        const next = games.find(e => !done(e) && (e.competitions?.[0]?.status?.type?.state || "pre") === "pre");
+        $("liGames").innerHTML = live
+            ? gameCard(live, "● Live now", "live")
+            : gameCard(last, "Last game") + gameCard(next, next?.week?.text ? `Next · ${next.week.text}` : "Next game");
+
+        renderLeaders();
+    }
+
+    function gameCard(e, label, cls){
+        if (!e) return "";
+        const comp = e.competitions[0];
+        const { us, them, home, away } = sides(comp);
+        const status = comp.status || e.status || {};
+        const st = status.type || {};
+        const showScore = st.state === "in" || st.state === "post";
+        const side = c => `<img src="${esc(logo(c.team))}" alt="${esc(c.team.abbreviation)}" title="${esc(c.team.abbreviation)}"> ${showScore ? esc(score(c)) : esc(c.team.abbreviation)}`;
+        let result = "", extra = "";
+        if (st.state === "in"){
+            result = esc(st.shortDetail || "");
+            const s = comp.situation;
+            if (s){
+                const ball = s.possession ? (s.possession === us?.team?.id ? "🏈 DET" : "🏈 " + esc(them?.team?.abbreviation || "")) : "";
+                extra = `<div class="li-sit">${ball} ${esc(s.downDistanceText || s.shortDownDistanceText || "")}${s.isRedZone ? " · Red zone" : ""}</div>`;
+            }
+        } else if (st.state === "post"){
+            const a = +score(us), b = +score(them);
+            const r = a > b ? `<span class="li-w">W</span>` : a < b ? `<span class="li-l">L</span>` : "T";
+            result = `${r} ${a}–${b} ${us.homeAway === "home" ? "vs" : "@"} ${esc(them.team.abbreviation)}`;
+        } else {
+            const d = new Date(e.date);
+            result = d.toLocaleDateString([], { weekday:"short", month:"short", day:"numeric" }) + " · " +
+                     d.toLocaleTimeString([], { hour:"numeric", minute:"2-digit" });
+        }
+        if (!home || !away) return "";
+        return `<div class="li-game ${cls || ""}">
+            <div class="li-game-label">${esc(label)}</div>
+            <div class="li-matchup">${side(away)} <span>${showScore ? "–" : "@"}</span> ${side(home)}</div>
+            <div class="li-result">${result}</div>${extra}
+        </div>`;
+    }
+
+    function renderLeaders(){
+        if (!Object.keys(leaders).length){
+            if (!$("liLeaders").innerHTML) $("liLeaders").innerHTML = `<div class="li-error" style="color:#d1d5db">Loading player leaders…</div>`;
+            return;
+        }
+        $("liLeaders").innerHTML = LEADERS[tab].map(([key, label]) => {
+            const l = leaders[key];
+            if (!l) return "";
+            const a = athletes[l.athlete?.$ref] || {};
+            const nm = a.shortName || a.displayName || "—";
+            const pos = a.position?.abbreviation ? ` · ${a.position.abbreviation}` : "";
+            return `<div class="li-row"><img src="${esc(https(a.headshot?.href))}" alt="" onerror="this.style.visibility='hidden'">
+                <span class="li-name">${esc(nm)}<span class="li-cat">${label}${esc(pos)}</span></span>
+                <span class="li-big">${esc(l.displayValue ?? l.value)}</span>
+            </div>`;
+        }).join("") || `<div class="li-error" style="color:#d1d5db">No stats yet this season.</div>`;
+    }
+
+    $("liTabs").addEventListener("click", e => {
+        const b = e.target.closest("button[data-tab]");
+        if (!b) return;
+        tab = b.dataset.tab;
+        $("liTabs").querySelectorAll("button").forEach(x => x.classList.toggle("on", x === b));
+        renderLeaders();
+    });
+
+    load();
 })();
 </script>
 
