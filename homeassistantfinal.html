@@ -21,6 +21,7 @@
     box-sizing:border-box;
     font-family:Segoe UI,sans-serif;
 }
+*{ resize: both;}
 
 /* HEADER CODE FOR DATE AND TIME */
 .header{
@@ -34,6 +35,8 @@
     border-radius:15px;
     padding:20px;
     color:white;
+    resize:both;   /* <-- this creates the draggable corner handle */
+    overflow:hidden;
 }
 .search-bar{
     display:flex;
@@ -197,8 +200,18 @@ body{
     margin-bottom: 1px;
     align-items: start;
     grid-auto-rows: 400px;
+    
+    min-width:250px;
+    min-height:200px;
+    overflow:auto;
+    background:none;
+    border-radius:15px;
+    padding:15px;
+    border: transparent;
 
 }
+
+
 
 
 
@@ -461,9 +474,6 @@ li{
 
 
 
-
-
-
  <!-- TITLE, DATE, TIME -->
 <div class="header">
     <h1></h1><br/>
@@ -474,7 +484,7 @@ li{
 <div class="dashboard">
 
 <!-- CALENDAR -->
-<div class="widget calendar-widget" draggable="true">
+<div class="widget speed-widget" draggable="true">
     <div class="widget-header">
         📅 Google Calendar
     </div>
@@ -484,7 +494,7 @@ li{
 </div>
 
 <!-- WEATHER -->
-<div class="weather-widget">
+<div class="weather-widget widget speed-widget">
     <div id="weather-city">Loading...</div>
     <div id="weather-icon">☀️</div>
     <div id="weather-temp">--°F</div>
@@ -495,7 +505,7 @@ li{
 
 
 <!-- STOCK TRACKER -->
-    <div class="weather-widget">
+    <div class="widget speed-widget">
         <h2>📈 STOCK TRACKER</h2>
         <div id="watchlist"></div>
     </div>
@@ -1324,14 +1334,12 @@ audio.addEventListener(
 document.getElementById("playBtn")
 .textContent="⏸ Pause";
 });
-
 audio.addEventListener(
 "pause",
 ()=>{
 document.getElementById("playBtn")
 .textContent="▶ Play";
 });
-
 audio.addEventListener(
 "timeupdate",
 ()=>{
@@ -1340,13 +1348,11 @@ localStorage.setItem(
 audio.currentTime
 );
 });
-
 audio.addEventListener(
 "ended",
 ()=>{
 nextSong();
 });
-
 volume.addEventListener(
 "input",
 ()=>{
@@ -1357,7 +1363,6 @@ localStorage.setItem(
 volume.value
 );
 });
-
 dropZone.onclick=()=>{
 upload.click();
 };
@@ -1366,52 +1371,39 @@ upload.onchange=()=>{
     [...upload.files]
     .forEach(file=>saveSong(file));
 };
-
 dropZone.addEventListener(
 "dragover",
 e=>{
 e.preventDefault();
 });
-
 dropZone.addEventListener(
 "drop",
 e=>{
 e.preventDefault();
-
 [...e.dataTransfer.files]
 .forEach(file=>saveSong(file));
-});
-
+})
 document
 .getElementById("clearPlaylist")
 .onclick=()=>{
-
 if(!confirm(
 "Delete entire playlist?"
 )) return;
-
 const tx=db.transaction(
 ["songs"],
 "readwrite"
 );
-
 tx.objectStore("songs")
 .clear();
-
 localStorage.removeItem(
 "currentSong"
 );
-
 localStorage.removeItem(
 "position"
 );
-
 audio.src="";
-
 playlistDiv.innerHTML="";
-
 songs=[];
-
 nowPlaying.textContent=
 "No song selected";
 };
