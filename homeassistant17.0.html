@@ -738,6 +738,66 @@ li{
     color:#d1d5db;
 }
 
+
+/* THERMOSTAT (ecobee via Home Assistant) */
+#thermoWidget{
+    --th-chip:rgba(255,255,255,0.18); --th-line:rgba(255,255,255,0.28); --th-muted:rgba(255,255,255,0.78);
+    --th-ok:#34d399; --th-bad:#f87171; --th-light:#fbbf24;
+}
+#thermoWidget .th-body{ text-align:center; }
+#thermoWidget button{
+    margin:0; padding:0; border:0; color:white; background:var(--th-chip);
+    border-radius:999px; cursor:pointer; font:inherit;
+}
+#thermoWidget .th-top{ display:flex; align-items:center; justify-content:space-between; gap:8px; }
+#thermoWidget .th-status{ display:flex; align-items:center; gap:6px; font-size:12px; color:var(--th-muted); }
+#thermoWidget .th-dot{ width:8px; height:8px; border-radius:50%; background:rgba(255,255,255,0.45); }
+#thermoWidget .th-dot.ok{ background:var(--th-ok); }
+#thermoWidget .th-dot.bad{ background:var(--th-bad); }
+#thermoWidget .th-dot.demo{ background:var(--th-light); }
+#thermoWidget .th-gear{ width:32px; height:32px; display:grid; place-items:center; }
+#thermoWidget .th-err{ display:none; margin-top:10px; padding:8px 10px; border-radius:10px; font-size:12px; text-align:left;
+    background:rgba(248,113,113,0.22); border:1px solid rgba(248,113,113,0.5); }
+#thermoWidget .th-name{ font-weight:700; margin-top:10px; }
+#thermoWidget .th-sub{ font-size:12px; color:var(--th-muted); }
+#thermoWidget .th-dial{ position:relative; width:200px; height:182px; margin:4px auto 0; }
+#thermoWidget .th-dial svg{ width:100%; height:100%; }
+#thermoWidget .th-center{ position:absolute; inset:0; display:flex; flex-direction:column; align-items:center; justify-content:center; padding-top:6px; }
+#thermoWidget .th-action{ font-size:12px; text-transform:uppercase; letter-spacing:.08em; font-weight:700; margin-bottom:4px; }
+#thermoWidget .th-target{ font-size:48px; font-weight:300; line-height:1; }
+#thermoWidget .th-target.small{ font-size:32px; }
+#thermoWidget .th-steppers{ display:grid; gap:8px; }
+#thermoWidget .th-stepper{ display:flex; align-items:center; justify-content:center; gap:12px; }
+#thermoWidget .th-stepper .lbl{ width:62px; text-align:right; font-size:13px; color:var(--th-muted); }
+#thermoWidget .th-stepper .val{ width:44px; font-weight:700; }
+#thermoWidget .th-step{ width:40px; height:40px; font-size:22px; line-height:1; }
+#thermoWidget .th-step:active{ transform:scale(.94); }
+#thermoWidget .th-seg{ display:flex; background:var(--th-chip); border-radius:12px; padding:3px; margin-top:14px; }
+#thermoWidget .th-seg button{ flex:1; padding:7px 4px; border-radius:9px; font-size:13px; background:transparent; color:var(--th-muted); }
+#thermoWidget .th-seg button.on{ background:white; color:#333; font-weight:700; }
+#thermoWidget .th-chips{ display:flex; flex-wrap:wrap; justify-content:center; gap:6px; margin-top:10px; }
+#thermoWidget .th-chip{ padding:6px 12px; font-size:13px; }
+#thermoWidget .th-chip.on{ background:white; color:#333; font-weight:700; }
+#thermoWidget .th-light{ border-top:1px solid var(--th-line); margin-top:14px; padding-top:12px; text-align:left; }
+#thermoWidget .th-light-row{ display:flex; align-items:center; justify-content:space-between; gap:8px; }
+#thermoWidget .th-switch{ width:50px; height:30px; position:relative; background:rgba(255,255,255,0.3); transition:background .2s; flex:none; }
+#thermoWidget .th-switch::after{ content:""; position:absolute; top:3px; left:3px; width:24px; height:24px; border-radius:50%; background:white; transition:left .2s; }
+#thermoWidget .th-switch.on{ background:var(--th-light); }
+#thermoWidget .th-switch.on::after{ left:23px; }
+#thermoWidget input[type=range]{ width:100%; margin-top:10px; accent-color:var(--th-light); }
+#thermoWidget .th-footer{ margin-top:12px; font-size:11px; color:var(--th-muted); }
+#thermoWidget .hidden{ display:none !important; }
+
+#thSettings{ border:0; border-radius:18px; padding:18px; width:min(360px, calc(100vw - 32px)); margin:auto;
+    background:#1f2430; color:white; box-shadow:0 20px 50px rgba(0,0,0,.5); }
+#thSettings::backdrop{ background:rgba(0,0,0,.5); }
+#thSettings h2{ margin:0 0 8px; font-size:16px; }
+#thSettings .th-note{ font-size:12px; color:rgba(255,255,255,.7); }
+#thSettings label{ display:block; font-size:12px; color:rgba(255,255,255,.7); margin-top:10px; }
+#thSettings input{ width:100%; padding:9px 10px; margin-top:4px; border-radius:10px; border:1px solid #444; background:#2b2b2b; color:white; font:inherit; }
+#thSettings .th-btns{ display:flex; gap:8px; margin-top:16px; justify-content:flex-end; }
+#thSettings button{ margin:0; padding:8px 14px; border:0; border-radius:10px; background:#3a4150; color:white; cursor:pointer; }
+#thSettings button.primary{ background:#4caf50; }
 </style>
 </head>
 <body>
@@ -793,6 +853,44 @@ li{
                 <div id="weather-humidity">Humidity: --%</div>
                 <div id="weather-wind">Wind: -- mph</div>
             </div>
+        </div>
+    </div>
+</div>
+
+<!-- THERMOSTAT (ecobee via Home Assistant) -->
+<div class="widget" id="thermoWidget" data-h="580">
+    <div class="widget-inner">
+        <div class="widget-header" tabindex="0" aria-label="THERMOSTAT. Drag to move, or use the arrow keys.">
+            <span class="title">🌡️ THERMOSTAT</span>
+        </div>
+        <div class="widget-body th-body">
+            <div class="th-top">
+                <div class="th-status"><span class="th-dot" id="thDot"></span><span id="thStatus">Starting…</span></div>
+                <button class="th-gear" id="thGear" title="Connect to Home Assistant" aria-label="Thermostat settings">⚙️</button>
+            </div>
+            <div class="th-err" id="thErr"></div>
+            <div class="th-name" id="thName">Thermostat</div>
+            <div class="th-sub" id="thSub"></div>
+            <div class="th-dial">
+                <svg viewBox="0 0 220 200" id="thDialSvg" aria-hidden="true"></svg>
+                <div class="th-center">
+                    <div class="th-action" id="thAction"></div>
+                    <div class="th-target" id="thTarget">--</div>
+                    <div class="th-sub" id="thCurrent"></div>
+                </div>
+            </div>
+            <div class="th-steppers" id="thSteppers"></div>
+            <div class="th-seg" id="thModes"></div>
+            <div class="th-chips" id="thPresets"></div>
+
+            <div class="th-light hidden" id="thLightSec">
+                <div class="th-light-row">
+                    <div><div class="th-name" id="thLName" style="margin-top:0">Light</div><div class="th-sub" id="thLSub"></div></div>
+                    <button class="th-switch" id="thLSwitch" aria-label="Toggle light"></button>
+                </div>
+                <input type="range" id="thLBright" min="1" max="100" value="100" aria-label="Brightness">
+            </div>
+            <div class="th-footer" id="thUpdated"></div>
         </div>
     </div>
 </div>
@@ -1995,6 +2093,248 @@ pomoModeBtns.forEach(b => b.onclick = () => pomoSetMode(b.dataset.mode));
 pomoCountEl.textContent = pomoCount;
 pomoRender();
 
+</script>
+
+
+<dialog id="thSettings">
+    <h2>Connect to Home Assistant</h2>
+    <div class="th-note">Settings last only while this page is open. To keep them, fill in THERMO_CONFIG in the thermostat script near the bottom of this file.</div>
+    <label>Home Assistant URL (leave blank if this page is served by Home Assistant)
+        <input id="thSUrl" placeholder="http://homeassistant.local:8123"></label>
+    <label>Long-lived access token
+        <input id="thSToken" type="password" placeholder="eyJ0eXAiOi..."></label>
+    <label>Thermostat entity ID
+        <input id="thSThermo" placeholder="climate.my_ecobee"></label>
+    <label>Light entity ID (optional)
+        <input id="thSLight" placeholder="light.living_room"></label>
+    <div class="th-btns">
+        <button id="thSDemo">Use demo</button>
+        <button id="thSCancel">Cancel</button>
+        <button id="thSSave" class="primary">Connect</button>
+    </div>
+</dialog>
+
+<script>
+/* THERMOSTAT — ecobee (and optional light) through Home Assistant
+   Setup:
+   1. Home Assistant → your profile → Security → Long-lived access tokens → Create token.
+   2. Settings → Devices & services → Entities → find your thermostat (e.g. climate.my_ecobee).
+   3. Fill in THERMO_CONFIG below (or use the ⚙️ button in the widget).
+   4. Copy this dashboard into Home Assistant's /config/www/ folder and open
+      http://homeassistant.local:8123/local/<this file name> so the browser doesn't block the connection.
+   Keep your token private — don't share this file once it's filled in. */
+(function(){
+    const THERMO_CONFIG = {
+        HA_URL: "",                       // blank = same server as this page
+        TOKEN: "",                        // blank = demo mode
+        THERMOSTAT: "climate.my_ecobee",
+        LIGHT: "",                        // optional, e.g. "light.living_room"
+        POLL_SECONDS: 10
+    };
+
+    const $ = id => document.getElementById(id);
+    const cfg = { ...THERMO_CONFIG };
+    const st = { climate:null, light:null, unit:"°F", demo:!cfg.TOKEN, holdUntil:0 };
+    let sendTimer = null, pollTimer = null;
+    const COLORS = { heat:"#ff9a4d", cool:"#5aa9ff", heat_cool:"#a78bfa", auto:"#a78bfa", off:"rgba(255,255,255,0.45)" };
+
+    function demoData(){
+        st.unit = "°F";
+        st.climate = { entity_id:"climate.demo", state:"heat", attributes:{
+            friendly_name:"Ecobee (demo)", current_temperature:69, current_humidity:41, temperature:70,
+            target_temp_low:68, target_temp_high:75, hvac_action:"heating", min_temp:45, max_temp:92,
+            target_temp_step:1, hvac_modes:["heat","cool","heat_cool","off"],
+            preset_modes:["home","away","sleep"], preset_mode:"home" } };
+        st.light = { entity_id:"light.demo", state:"on", attributes:{ friendly_name:"Living room light (demo)", brightness:180 } };
+    }
+
+    async function api(path, method = "GET", body){
+        const res = await fetch((cfg.HA_URL || "").replace(/\/$/, "") + path, {
+            method,
+            headers:{ Authorization:"Bearer " + cfg.TOKEN, "Content-Type":"application/json" },
+            body: body ? JSON.stringify(body) : undefined
+        });
+        if (res.status === 401) throw new Error("Token was rejected (401). Create a new long-lived token.");
+        if (res.status === 404) throw new Error("Not found (404): check the entity ID “" + path.split("/").pop() + "”.");
+        if (!res.ok) throw new Error("Home Assistant returned " + res.status);
+        return res.json();
+    }
+
+    async function callService(domain, service, data){
+        if (st.demo){ render(); return; }
+        try { await api(`/api/services/${domain}/${service}`, "POST", data); setTimeout(refresh, 1500); }
+        catch(e){ showError(e); }
+    }
+
+    async function refresh(){
+        if (st.demo){ setStatus("demo", "Demo mode"); render(); return; }
+        if (Date.now() < st.holdUntil) return;
+        try {
+            const jobs = [api("/api/states/" + cfg.THERMOSTAT)];
+            if (cfg.LIGHT) jobs.push(api("/api/states/" + cfg.LIGHT));
+            const [c, l] = await Promise.all(jobs);
+            st.climate = c; st.light = l || null;
+            setStatus("ok", "Connected"); hideError();
+            $("thUpdated").textContent = "Updated " + new Date().toLocaleTimeString([], { hour:"numeric", minute:"2-digit" });
+            render();
+        } catch(e){
+            const msg = e instanceof TypeError
+                ? "Can't reach Home Assistant. Check the URL, make sure you're on your home network, or open this dashboard from Home Assistant's /local/ folder."
+                : e.message;
+            setStatus("bad", "Offline"); showError(msg);
+        }
+    }
+
+    async function loadUnit(){
+        if (st.demo) return;
+        try { const c = await api("/api/config"); st.unit = (c.unit_system && c.unit_system.temperature) || "°F"; } catch(e){}
+    }
+
+    function stepTemp(which, dir){
+        const a = st.climate.attributes;
+        const step = a.target_temp_step || (st.unit === "°C" ? 0.5 : 1);
+        const clamp = v => Math.min(a.max_temp ?? 95, Math.max(a.min_temp ?? 40, v));
+        a[which] = clamp(Math.round(((a[which] ?? a.current_temperature) + dir * step) * 10) / 10);
+        if (which === "target_temp_low" && a.target_temp_high - a.target_temp_low < 2) a.target_temp_high = a.target_temp_low + 2;
+        if (which === "target_temp_high" && a.target_temp_high - a.target_temp_low < 2) a.target_temp_low = a.target_temp_high - 2;
+        st.holdUntil = Date.now() + 4000;
+        render();
+        clearTimeout(sendTimer);
+        sendTimer = setTimeout(() => {
+            const data = { entity_id:cfg.THERMOSTAT };
+            if (which === "temperature") data.temperature = a.temperature;
+            else { data.target_temp_low = a.target_temp_low; data.target_temp_high = a.target_temp_high; }
+            callService("climate", "set_temperature", data);
+        }, 800);
+    }
+    function setMode(mode){
+        st.climate.state = mode;
+        if (st.demo) st.climate.attributes.hvac_action = mode === "off" ? "off" : "idle";
+        st.holdUntil = Date.now() + 3000;
+        callService("climate", "set_hvac_mode", { entity_id:cfg.THERMOSTAT, hvac_mode:mode });
+    }
+    function setPreset(p){
+        st.climate.attributes.preset_mode = p;
+        st.holdUntil = Date.now() + 3000;
+        callService("climate", "set_preset_mode", { entity_id:cfg.THERMOSTAT, preset_mode:p });
+    }
+    function toggleLight(){
+        st.light.state = st.light.state === "on" ? "off" : "on";
+        st.holdUntil = Date.now() + 3000;
+        callService("light", "toggle", { entity_id:cfg.LIGHT });
+    }
+    function setBrightness(pct){
+        st.light.state = "on"; st.light.attributes.brightness = Math.round(pct * 2.55);
+        st.holdUntil = Date.now() + 3000;
+        callService("light", "turn_on", { entity_id:cfg.LIGHT, brightness_pct:+pct });
+    }
+
+    const MODE_LABEL = { heat:"Heat", cool:"Cool", heat_cool:"Auto", auto:"Auto", off:"Off", fan_only:"Fan", dry:"Dry" };
+    const ACTION_LABEL = { heating:"Heating", cooling:"Cooling", idle:"Idle", off:"", fan:"Fan on", drying:"Drying" };
+    const nice = s => (s || "").replace(/_/g, " ").replace(/\b\w/g, c => c.toUpperCase());
+    const fmt = v => v == null ? "--" : (Math.round(v * 10) / 10) + "°";
+
+    function polar(cx, cy, r, deg){ const a = deg * Math.PI / 180; return [cx + r * Math.cos(a), cy + r * Math.sin(a)]; }
+    function arc(cx, cy, r, a0, a1){
+        const [x0, y0] = polar(cx, cy, r, a0), [x1, y1] = polar(cx, cy, r, a1);
+        return `M${x0.toFixed(2)} ${y0.toFixed(2)} A${r} ${r} 0 ${a1 - a0 > 180 ? 1 : 0} 1 ${x1.toFixed(2)} ${y1.toFixed(2)}`;
+    }
+    function drawDial(a, mode){
+        const min = a.min_temp ?? 45, max = a.max_temp ?? 92;
+        const toDeg = v => 135 + 270 * Math.min(1, Math.max(0, (v - min) / (max - min)));
+        const cx = 110, cy = 105, r = 88, col = COLORS[mode] || COLORS.off;
+        let fill = "";
+        if (mode === "heat_cool" || mode === "auto"){
+            if (a.target_temp_low != null && a.target_temp_high != null)
+                fill = `<path d="${arc(cx, cy, r, toDeg(a.target_temp_low), toDeg(a.target_temp_high))}" stroke="${col}" stroke-width="12" fill="none" stroke-linecap="round"/>`;
+        } else if (mode !== "off" && a.temperature != null){
+            fill = `<path d="${arc(cx, cy, r, 135, toDeg(a.temperature))}" stroke="${col}" stroke-width="12" fill="none" stroke-linecap="round"/>`;
+        }
+        let marker = "";
+        if (a.current_temperature != null){
+            const [mx, my] = polar(cx, cy, r, toDeg(a.current_temperature));
+            marker = `<circle cx="${mx}" cy="${my}" r="7" fill="white" stroke="rgba(0,0,0,0.55)" stroke-width="2.5"/>`;
+        }
+        $("thDialSvg").innerHTML =
+            `<path d="${arc(cx, cy, r, 135, 405)}" stroke="rgba(255,255,255,0.25)" stroke-width="12" fill="none" stroke-linecap="round"/>${fill}${marker}`;
+    }
+
+    function render(){
+        const c = st.climate;
+        if (c){
+            const a = c.attributes, mode = c.state;
+            const dual = mode === "heat_cool" || mode === "auto";
+            $("thName").textContent = a.friendly_name || cfg.THERMOSTAT;
+            $("thSub").textContent = a.current_humidity != null ? `Humidity ${a.current_humidity}%` : "";
+            $("thAction").textContent = mode === "off" ? "Off" : (ACTION_LABEL[a.hvac_action] ?? nice(a.hvac_action));
+            $("thAction").style.color = a.hvac_action === "heating" ? COLORS.heat : a.hvac_action === "cooling" ? COLORS.cool : "rgba(255,255,255,0.78)";
+            const tgt = $("thTarget");
+            tgt.classList.toggle("small", dual);
+            tgt.textContent = mode === "off" ? "--" : dual ? `${fmt(a.target_temp_low)}–${fmt(a.target_temp_high)}` : fmt(a.temperature);
+            $("thCurrent").textContent = `Inside ${fmt(a.current_temperature)}${st.unit.replace("°", "")}`;
+            drawDial(a, mode);
+
+            const rows = mode === "off" ? [] : dual
+                ? [["target_temp_low", "Heat to"], ["target_temp_high", "Cool to"]]
+                : [["temperature", "Set to"]];
+            $("thSteppers").innerHTML = rows.map(([k, l]) =>
+                `<div class="th-stepper"><span class="lbl">${l}</span>
+                  <button class="th-step" data-k="${k}" data-d="-1" aria-label="Lower">−</button>
+                  <span class="val">${fmt(a[k])}</span>
+                  <button class="th-step" data-k="${k}" data-d="1" aria-label="Raise">+</button></div>`).join("");
+            $("thModes").innerHTML = (a.hvac_modes || []).map(m =>
+                `<button data-mode="${m}" class="${m === mode ? "on" : ""}">${MODE_LABEL[m] || nice(m)}</button>`).join("");
+            $("thPresets").innerHTML = (a.preset_modes || []).filter(p => p !== "temp" && p !== "none").map(p =>
+                `<button class="th-chip ${p === a.preset_mode ? "on" : ""}" data-preset="${p}">${nice(p)}</button>`).join("");
+        }
+
+        const l = st.light, showLight = !!l && (st.demo || !!cfg.LIGHT);
+        $("thLightSec").classList.toggle("hidden", !showLight);
+        if (showLight){
+            const on = l.state === "on", pct = Math.round((l.attributes.brightness || 0) / 2.55);
+            $("thLName").textContent = l.attributes.friendly_name || cfg.LIGHT;
+            $("thLSub").textContent = on ? `On · ${pct}%` : "Off";
+            $("thLSwitch").classList.toggle("on", on);
+            if (document.activeElement !== $("thLBright")) $("thLBright").value = on ? Math.max(1, pct) : 1;
+        }
+        if (st.demo) $("thUpdated").textContent = "Demo mode: tap ⚙️ to connect your Home Assistant";
+    }
+
+    function setStatus(kind, text){ $("thDot").className = "th-dot " + kind; $("thStatus").textContent = text; }
+    function showError(e){ $("thErr").textContent = e.message || e; $("thErr").style.display = "block"; }
+    function hideError(){ $("thErr").style.display = "none"; }
+
+    $("thSteppers").addEventListener("click", e => { const b = e.target.closest(".th-step"); if (b) stepTemp(b.dataset.k, +b.dataset.d); });
+    $("thModes").addEventListener("click", e => { const b = e.target.closest("button"); if (b) setMode(b.dataset.mode); });
+    $("thPresets").addEventListener("click", e => { const b = e.target.closest("button"); if (b) setPreset(b.dataset.preset); });
+    $("thLSwitch").addEventListener("click", toggleLight);
+    $("thLBright").addEventListener("change", e => setBrightness(e.target.value));
+    $("thLBright").addEventListener("input", e => { if (st.light) $("thLSub").textContent = `On · ${e.target.value}%`; });
+
+    $("thGear").addEventListener("click", () => {
+        $("thSUrl").value = cfg.HA_URL; $("thSToken").value = cfg.TOKEN;
+        $("thSThermo").value = cfg.THERMOSTAT; $("thSLight").value = cfg.LIGHT;
+        $("thSettings").showModal();
+    });
+    $("thSCancel").addEventListener("click", () => $("thSettings").close());
+    $("thSDemo").addEventListener("click", () => { $("thSettings").close(); start(true); });
+    $("thSSave").addEventListener("click", () => {
+        cfg.HA_URL = $("thSUrl").value.trim(); cfg.TOKEN = $("thSToken").value.trim();
+        cfg.THERMOSTAT = $("thSThermo").value.trim(); cfg.LIGHT = $("thSLight").value.trim();
+        $("thSettings").close(); start(!cfg.TOKEN);
+    });
+
+    async function start(demo){
+        st.demo = demo; st.climate = null; st.light = null; hideError();
+        clearInterval(pollTimer);
+        if (demo){ demoData(); refresh(); return; }
+        setStatus("", "Connecting…");
+        await loadUnit();
+        await refresh();
+        pollTimer = setInterval(refresh, (cfg.POLL_SECONDS || 10) * 1000);
+    }
+    start(st.demo);
+})();
 </script>
 
 </body>

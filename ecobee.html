@@ -1,0 +1,381 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Home Widget</title>
+<!--
+  HOME WIDGET — controls an ecobee thermostat (and optionally a light) through Home Assistant.
+
+  QUICK SETUP
+  1. In Home Assistant: click your profile (bottom-left) → Security → Long-lived access tokens → Create token.
+  2. Find your entity IDs: Settings → Devices & services → Entities (e.g. climate.my_ecobee, light.living_room).
+  3. Fill in CONFIG below, OR leave it blank and use the gear button in the widget.
+  4. Best way to open it: copy this file into Home Assistant's /config/www/ folder, then visit
+       http://homeassistant.local:8123/local/home-widget.html
+     (Same address as Home Assistant = no browser "CORS" blocking.)
+  Keep your token private — don't share this file once the token is filled in.
+-->
+<style>
+  :root {
+    --bg: #eef1f5; --card: #ffffff; --ink: #1b2330; --muted: #6b7686; --line: #e2e7ee;
+    --chip: #f2f5f9; --heat: #f07a2c; --cool: #2f86e6; --auto: #7c5ce0; --off: #9aa4b2;
+    --ok: #22a06b; --bad: #d64545; --accent: #2f86e6; --light: #f5b400;
+  }
+  @media (prefers-color-scheme: dark) {
+    :root {
+      --bg: #0f1318; --card: #1a2028; --ink: #e8edf3; --muted: #93a0b0; --line: #2a323d;
+      --chip: #232b35; --off: #5d6876;
+    }
+  }
+  * { box-sizing: border-box; }
+  body { margin: 0; min-height: 100vh; background: var(--bg); color: var(--ink);
+    font: 15px/1.4 system-ui, -apple-system, "Segoe UI", Roboto, sans-serif;
+    display: flex; justify-content: center; align-items: flex-start; padding: 24px 16px; }
+  .card { width: 100%; max-width: 380px; background: var(--card); border-radius: 22px;
+    box-shadow: 0 8px 30px rgba(0,0,0,.08); padding: 18px 18px 14px; }
+  header { display: flex; align-items: center; gap: 10px; }
+  header h1 { font-size: 17px; margin: 0; flex: 1; }
+  .status { display: flex; align-items: center; gap: 6px; font-size: 12px; color: var(--muted); }
+  .dot { width: 8px; height: 8px; border-radius: 50%; background: var(--off); }
+  .dot.ok { background: var(--ok); } .dot.bad { background: var(--bad); } .dot.demo { background: var(--light); }
+  button { font: inherit; color: inherit; cursor: pointer; border: 0; background: none; }
+  .icon-btn { width: 34px; height: 34px; border-radius: 50%; display: grid; place-items: center; background: var(--chip); }
+  .icon-btn:hover { filter: brightness(.95); }
+  section { border-top: 1px solid var(--line); margin-top: 14px; padding-top: 14px; }
+  .row { display: flex; align-items: center; justify-content: space-between; gap: 8px; }
+  .name { font-weight: 600; }
+  .sub { font-size: 12px; color: var(--muted); }
+  .dial { position: relative; width: 220px; height: 200px; margin: 6px auto 0; }
+  .dial svg { width: 100%; height: 100%; }
+  .center { position: absolute; inset: 0; display: flex; flex-direction: column; align-items: center; justify-content: center; padding-top: 6px; }
+  .target { font-size: 52px; font-weight: 300; letter-spacing: -1px; line-height: 1; }
+  .target.small { font-size: 36px; }
+  .action { font-size: 12px; text-transform: uppercase; letter-spacing: .08em; font-weight: 600; margin-bottom: 4px; }
+  .steppers { display: grid; gap: 8px; margin-top: 4px; }
+  .stepper { display: flex; align-items: center; justify-content: center; gap: 14px; }
+  .stepper .lbl { width: 70px; text-align: right; font-size: 13px; color: var(--muted); }
+  .stepper .val { width: 48px; text-align: center; font-weight: 600; }
+  .step { width: 44px; height: 44px; border-radius: 50%; background: var(--chip); font-size: 22px; line-height: 1; }
+  .step:active { transform: scale(.94); }
+  .seg { display: flex; background: var(--chip); border-radius: 12px; padding: 3px; margin-top: 14px; }
+  .seg button { flex: 1; padding: 7px 4px; border-radius: 9px; font-size: 13px; color: var(--muted); }
+  .seg button.on { background: var(--card); color: var(--ink); font-weight: 600; box-shadow: 0 1px 3px rgba(0,0,0,.1); }
+  .chips { display: flex; flex-wrap: wrap; gap: 6px; margin-top: 10px; }
+  .chip { padding: 6px 12px; border-radius: 999px; background: var(--chip); font-size: 13px; }
+  .chip.on { background: var(--accent); color: #fff; }
+  .switch { width: 50px; height: 30px; border-radius: 999px; background: var(--off); position: relative; transition: background .2s; }
+  .switch::after { content: ""; position: absolute; top: 3px; left: 3px; width: 24px; height: 24px; border-radius: 50%; background: #fff; transition: left .2s; }
+  .switch.on { background: var(--light); } .switch.on::after { left: 23px; }
+  input[type=range] { width: 100%; margin-top: 12px; accent-color: var(--light); }
+  footer { margin-top: 14px; font-size: 11px; color: var(--muted); text-align: center; }
+  .err { margin-top: 10px; padding: 8px 10px; border-radius: 10px; font-size: 12px; background: rgba(214,69,69,.12); color: var(--bad); display: none; }
+  dialog { border: 0; border-radius: 18px; padding: 18px; width: min(360px, calc(100vw - 32px)); background: var(--card); color: var(--ink); }
+  dialog::backdrop { background: rgba(0,0,0,.4); }
+  dialog h2 { margin: 0 0 10px; font-size: 16px; }
+  dialog label { display: block; font-size: 12px; color: var(--muted); margin-top: 10px; }
+  dialog input { width: 100%; padding: 9px 10px; margin-top: 4px; border-radius: 10px; border: 1px solid var(--line); background: var(--bg); color: var(--ink); font: inherit; }
+  .btns { display: flex; gap: 8px; margin-top: 16px; justify-content: flex-end; }
+  .btn { padding: 8px 14px; border-radius: 10px; background: var(--chip); }
+  .btn.primary { background: var(--accent); color: #fff; }
+  .hidden { display: none !important; }
+</style>
+</head>
+<body>
+<div class="card">
+  <header>
+    <h1>Home</h1>
+    <div class="status"><span class="dot" id="dot"></span><span id="statusText">Starting…</span></div>
+    <button class="icon-btn" id="gear" title="Settings" aria-label="Settings">
+      <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="3"/><path d="M19.4 15a1.7 1.7 0 0 0 .3 1.8l.1.1a2 2 0 1 1-2.8 2.8l-.1-.1a1.7 1.7 0 0 0-1.8-.3 1.7 1.7 0 0 0-1 1.5V21a2 2 0 1 1-4 0v-.1a1.7 1.7 0 0 0-1.1-1.5 1.7 1.7 0 0 0-1.8.3l-.1.1a2 2 0 1 1-2.8-2.8l.1-.1a1.7 1.7 0 0 0 .3-1.8 1.7 1.7 0 0 0-1.5-1H3a2 2 0 1 1 0-4h.1a1.7 1.7 0 0 0 1.5-1.1 1.7 1.7 0 0 0-.3-1.8l-.1-.1a2 2 0 1 1 2.8-2.8l.1.1a1.7 1.7 0 0 0 1.8.3H9a1.7 1.7 0 0 0 1-1.5V3a2 2 0 1 1 4 0v.1a1.7 1.7 0 0 0 1 1.5 1.7 1.7 0 0 0 1.8-.3l.1-.1a2 2 0 1 1 2.8 2.8l-.1.1a1.7 1.7 0 0 0-.3 1.8V9a1.7 1.7 0 0 0 1.5 1H21a2 2 0 1 1 0 4h-.1a1.7 1.7 0 0 0-1.5 1z"/></svg>
+    </button>
+  </header>
+  <div class="err" id="err"></div>
+
+  <!-- Thermostat -->
+  <section id="thermo">
+    <div class="row">
+      <div><div class="name" id="tName">Thermostat</div><div class="sub" id="tSub"></div></div>
+    </div>
+    <div class="dial">
+      <svg viewBox="0 0 220 200" id="dialSvg"></svg>
+      <div class="center">
+        <div class="action" id="tAction"></div>
+        <div class="target" id="tTarget">--</div>
+        <div class="sub" id="tCurrent"></div>
+      </div>
+    </div>
+    <div class="steppers" id="steppers"></div>
+    <div class="seg" id="modes"></div>
+    <div class="chips" id="presets"></div>
+  </section>
+
+  <!-- Light (optional) -->
+  <section id="lightSec" class="hidden">
+    <div class="row">
+      <div><div class="name" id="lName">Light</div><div class="sub" id="lSub"></div></div>
+      <button class="switch" id="lSwitch" aria-label="Toggle light"></button>
+    </div>
+    <input type="range" id="lBright" min="1" max="100" value="100" aria-label="Brightness">
+  </section>
+
+  <footer id="updated"></footer>
+</div>
+
+<dialog id="settings">
+  <h2>Connect to Home Assistant</h2>
+  <div class="sub">Settings are kept only while this page is open. To make them permanent, edit CONFIG at the top of the file.</div>
+  <label>Home Assistant URL (leave blank if this page is served by Home Assistant)
+    <input id="sUrl" placeholder="http://homeassistant.local:8123"></label>
+  <label>Long-lived access token
+    <input id="sToken" type="password" placeholder="eyJ0eXAiOi..."></label>
+  <label>Thermostat entity ID
+    <input id="sThermo" placeholder="climate.my_ecobee"></label>
+  <label>Light entity ID (optional)
+    <input id="sLight" placeholder="light.living_room"></label>
+  <div class="btns">
+    <button class="btn" id="sDemo">Use demo</button>
+    <button class="btn" id="sCancel">Cancel</button>
+    <button class="btn primary" id="sSave">Connect</button>
+  </div>
+</dialog>
+
+<script>
+/* ===================== CONFIG — edit these ===================== */
+const CONFIG = {
+  HA_URL: "",              // e.g. "http://homeassistant.local:8123" — blank = same server as this page
+  TOKEN: "",               // long-lived access token (blank = demo mode)
+  THERMOSTAT: "climate.my_ecobee",
+  LIGHT: "",               // e.g. "light.living_room" — blank hides the light card
+  POLL_SECONDS: 10
+};
+/* =============================================================== */
+
+const $ = id => document.getElementById(id);
+const cfg = { ...CONFIG };
+const st = { climate: null, light: null, unit: "°F", demo: !cfg.TOKEN, holdUntil: 0 };
+let sendTimer = null, pollTimer = null;
+
+/* ---------- Demo data ---------- */
+function demoData() {
+  st.unit = "°F";
+  st.climate = { entity_id: "climate.demo", state: "heat", attributes: {
+    friendly_name: "Ecobee (demo)", current_temperature: 69, current_humidity: 41, temperature: 70,
+    target_temp_low: 68, target_temp_high: 75, hvac_action: "heating", min_temp: 45, max_temp: 92,
+    target_temp_step: 1, hvac_modes: ["heat", "cool", "heat_cool", "off"],
+    preset_modes: ["home", "away", "sleep"], preset_mode: "home" } };
+  st.light = { entity_id: "light.demo", state: "on", attributes: { friendly_name: "Living room light (demo)", brightness: 180 } };
+}
+
+/* ---------- Home Assistant API ---------- */
+async function api(path, method = "GET", body) {
+  const res = await fetch((cfg.HA_URL || "").replace(/\/$/, "") + path, {
+    method,
+    headers: { Authorization: "Bearer " + cfg.TOKEN, "Content-Type": "application/json" },
+    body: body ? JSON.stringify(body) : undefined
+  });
+  if (res.status === 401) throw new Error("Token was rejected (401). Create a new long-lived token.");
+  if (res.status === 404) throw new Error("Not found (404): check the entity ID “" + path.split("/").pop() + "”.");
+  if (!res.ok) throw new Error("Home Assistant returned " + res.status);
+  return res.json();
+}
+
+async function callService(domain, service, data) {
+  if (st.demo) { render(); return; }
+  try {
+    await api(`/api/services/${domain}/${service}`, "POST", data);
+    setTimeout(refresh, 1500);
+  } catch (e) { showError(e); }
+}
+
+async function refresh() {
+  if (st.demo) { setStatus("demo", "Demo mode"); render(); return; }
+  if (Date.now() < st.holdUntil) return; // don't overwrite a change that's still being sent
+  try {
+    const jobs = [api("/api/states/" + cfg.THERMOSTAT)];
+    if (cfg.LIGHT) jobs.push(api("/api/states/" + cfg.LIGHT));
+    const [c, l] = await Promise.all(jobs);
+    st.climate = c; st.light = l || null;
+    setStatus("ok", "Connected"); hideError();
+    $("updated").textContent = "Updated " + new Date().toLocaleTimeString([], { hour: "numeric", minute: "2-digit" });
+    render();
+  } catch (e) {
+    const msg = e instanceof TypeError
+      ? "Can't reach Home Assistant. Check the URL, make sure you're on your home network, or open this page from Home Assistant's /local/ folder (see notes at top of file)."
+      : e.message;
+    setStatus("bad", "Offline"); showError(msg);
+  }
+}
+
+async function loadUnit() {
+  if (st.demo) return;
+  try { const c = await api("/api/config"); st.unit = c.unit_system?.temperature || "°F"; } catch {}
+}
+
+/* ---------- Thermostat actions ---------- */
+function stepTemp(which, dir) {
+  const a = st.climate.attributes;
+  const step = a.target_temp_step || (st.unit === "°C" ? 0.5 : 1);
+  const clamp = v => Math.min(a.max_temp ?? 95, Math.max(a.min_temp ?? 40, v));
+  a[which] = clamp(Math.round(((a[which] ?? a.current_temperature) + dir * step) * 10) / 10);
+  // keep heat/cool range sane
+  if (which === "target_temp_low" && a.target_temp_high - a.target_temp_low < 2) a.target_temp_high = a.target_temp_low + 2;
+  if (which === "target_temp_high" && a.target_temp_high - a.target_temp_low < 2) a.target_temp_low = a.target_temp_high - 2;
+  st.holdUntil = Date.now() + 4000;
+  render();
+  clearTimeout(sendTimer);
+  sendTimer = setTimeout(() => {
+    const data = { entity_id: cfg.THERMOSTAT };
+    if (which === "temperature") data.temperature = a.temperature;
+    else { data.target_temp_low = a.target_temp_low; data.target_temp_high = a.target_temp_high; }
+    callService("climate", "set_temperature", data);
+  }, 800);
+}
+
+function setMode(mode) {
+  st.climate.state = mode;
+  if (st.demo) st.climate.attributes.hvac_action = mode === "off" ? "off" : "idle";
+  st.holdUntil = Date.now() + 3000;
+  callService("climate", "set_hvac_mode", { entity_id: cfg.THERMOSTAT, hvac_mode: mode });
+}
+
+function setPreset(p) {
+  st.climate.attributes.preset_mode = p;
+  st.holdUntil = Date.now() + 3000;
+  callService("climate", "set_preset_mode", { entity_id: cfg.THERMOSTAT, preset_mode: p });
+}
+
+/* ---------- Light actions ---------- */
+function toggleLight() {
+  st.light.state = st.light.state === "on" ? "off" : "on";
+  st.holdUntil = Date.now() + 3000;
+  callService("light", "toggle", { entity_id: cfg.LIGHT });
+}
+function setBrightness(pct) {
+  st.light.state = "on"; st.light.attributes.brightness = Math.round(pct * 2.55);
+  st.holdUntil = Date.now() + 3000;
+  callService("light", "turn_on", { entity_id: cfg.LIGHT, brightness_pct: +pct });
+}
+
+/* ---------- Rendering ---------- */
+const MODE_LABEL = { heat: "Heat", cool: "Cool", heat_cool: "Auto", auto: "Auto", off: "Off", fan_only: "Fan", dry: "Dry" };
+const ACTION_LABEL = { heating: "Heating", cooling: "Cooling", idle: "Idle", off: "", fan: "Fan on", drying: "Drying" };
+const nice = s => (s || "").replace(/_/g, " ").replace(/\b\w/g, c => c.toUpperCase());
+const fmt = v => v == null ? "--" : (Math.round(v * 10) / 10) + "°";
+
+function modeColor(mode) {
+  const v = getComputedStyle(document.documentElement);
+  return v.getPropertyValue({ heat: "--heat", cool: "--cool", heat_cool: "--auto", auto: "--auto" }[mode] || "--off").trim();
+}
+
+function polar(cx, cy, r, deg) { const a = deg * Math.PI / 180; return [cx + r * Math.cos(a), cy + r * Math.sin(a)]; }
+function arc(cx, cy, r, a0, a1) {
+  const [x0, y0] = polar(cx, cy, r, a0), [x1, y1] = polar(cx, cy, r, a1);
+  return `M${x0.toFixed(2)} ${y0.toFixed(2)} A${r} ${r} 0 ${a1 - a0 > 180 ? 1 : 0} 1 ${x1.toFixed(2)} ${y1.toFixed(2)}`;
+}
+
+function drawDial(a, mode) {
+  const min = a.min_temp ?? 45, max = a.max_temp ?? 92;
+  const toDeg = v => 135 + 270 * Math.min(1, Math.max(0, (v - min) / (max - min)));
+  const cx = 110, cy = 105, r = 88, col = modeColor(mode);
+  let fill = "";
+  if (mode === "heat_cool" || mode === "auto") {
+    if (a.target_temp_low != null && a.target_temp_high != null)
+      fill = `<path d="${arc(cx, cy, r, toDeg(a.target_temp_low), toDeg(a.target_temp_high))}" stroke="${col}" stroke-width="12" fill="none" stroke-linecap="round"/>`;
+  } else if (mode !== "off" && a.temperature != null) {
+    fill = `<path d="${arc(cx, cy, r, 135, toDeg(a.temperature))}" stroke="${col}" stroke-width="12" fill="none" stroke-linecap="round"/>`;
+  }
+  let marker = "";
+  if (a.current_temperature != null) {
+    const [mx, my] = polar(cx, cy, r, toDeg(a.current_temperature));
+    marker = `<circle cx="${mx}" cy="${my}" r="7" fill="var(--card)" stroke="var(--ink)" stroke-width="2.5"/>`;
+  }
+  $("dialSvg").innerHTML =
+    `<path d="${arc(cx, cy, r, 135, 405)}" stroke="var(--line)" stroke-width="12" fill="none" stroke-linecap="round"/>${fill}${marker}`;
+}
+
+function render() {
+  const c = st.climate;
+  if (c) {
+    const a = c.attributes, mode = c.state;
+    const dual = mode === "heat_cool" || mode === "auto";
+    $("tName").textContent = a.friendly_name || cfg.THERMOSTAT;
+    $("tSub").textContent = a.current_humidity != null ? `Humidity ${a.current_humidity}%` : "";
+    const act = ACTION_LABEL[a.hvac_action] ?? nice(a.hvac_action);
+    $("tAction").textContent = mode === "off" ? "Off" : act;
+    $("tAction").style.color = a.hvac_action === "heating" ? modeColor("heat") : a.hvac_action === "cooling" ? modeColor("cool") : "var(--muted)";
+    const tgt = $("tTarget");
+    tgt.classList.toggle("small", dual);
+    tgt.textContent = mode === "off" ? "--" : dual ? `${fmt(a.target_temp_low)}–${fmt(a.target_temp_high)}` : fmt(a.temperature);
+    $("tCurrent").textContent = `Inside ${fmt(a.current_temperature)}${st.unit.replace("°", "")}`;
+    drawDial(a, mode);
+
+    const rows = mode === "off" ? [] : dual
+      ? [["target_temp_low", "Heat to"], ["target_temp_high", "Cool to"]]
+      : [["temperature", "Set to"]];
+    $("steppers").innerHTML = rows.map(([k, l]) =>
+      `<div class="stepper"><span class="lbl">${l}</span>
+        <button class="step" data-k="${k}" data-d="-1" aria-label="Lower">−</button>
+        <span class="val">${fmt(a[k])}</span>
+        <button class="step" data-k="${k}" data-d="1" aria-label="Raise">+</button></div>`).join("");
+
+    $("modes").innerHTML = (a.hvac_modes || []).map(m =>
+      `<button data-mode="${m}" class="${m === mode ? "on" : ""}">${MODE_LABEL[m] || nice(m)}</button>`).join("");
+
+    $("presets").innerHTML = (a.preset_modes || []).filter(p => p !== "temp" && p !== "none").map(p =>
+      `<button class="chip ${p === a.preset_mode ? "on" : ""}" data-preset="${p}">${nice(p)}</button>`).join("");
+  }
+
+  const l = st.light, showLight = !!l && (st.demo || cfg.LIGHT);
+  $("lightSec").classList.toggle("hidden", !showLight);
+  if (showLight) {
+    const on = l.state === "on", pct = Math.round((l.attributes.brightness || 0) / 2.55);
+    $("lName").textContent = l.attributes.friendly_name || cfg.LIGHT;
+    $("lSub").textContent = on ? `On · ${pct}%` : "Off";
+    $("lSwitch").classList.toggle("on", on);
+    if (document.activeElement !== $("lBright")) $("lBright").value = on ? Math.max(1, pct) : 1;
+    $("lBright").disabled = l.attributes.brightness === undefined && on && !st.demo;
+  }
+  if (st.demo) $("updated").textContent = "Demo mode: tap the gear to connect your Home Assistant";
+}
+
+/* ---------- Status & errors ---------- */
+function setStatus(kind, text) { $("dot").className = "dot " + kind; $("statusText").textContent = text; }
+function showError(e) { $("err").textContent = e.message || e; $("err").style.display = "block"; }
+function hideError() { $("err").style.display = "none"; }
+
+/* ---------- Events ---------- */
+$("steppers").addEventListener("click", e => { const b = e.target.closest(".step"); if (b) stepTemp(b.dataset.k, +b.dataset.d); });
+$("modes").addEventListener("click", e => { const b = e.target.closest("button"); if (b) setMode(b.dataset.mode); });
+$("presets").addEventListener("click", e => { const b = e.target.closest("button"); if (b) setPreset(b.dataset.preset); });
+$("lSwitch").addEventListener("click", toggleLight);
+$("lBright").addEventListener("change", e => setBrightness(e.target.value));
+$("lBright").addEventListener("input", e => { if (st.light) $("lSub").textContent = `On · ${e.target.value}%`; });
+
+$("gear").addEventListener("click", () => {
+  $("sUrl").value = cfg.HA_URL; $("sToken").value = cfg.TOKEN;
+  $("sThermo").value = cfg.THERMOSTAT; $("sLight").value = cfg.LIGHT;
+  $("settings").showModal();
+});
+$("sCancel").addEventListener("click", () => $("settings").close());
+$("sDemo").addEventListener("click", () => { $("settings").close(); start(true); });
+$("sSave").addEventListener("click", () => {
+  cfg.HA_URL = $("sUrl").value.trim(); cfg.TOKEN = $("sToken").value.trim();
+  cfg.THERMOSTAT = $("sThermo").value.trim(); cfg.LIGHT = $("sLight").value.trim();
+  $("settings").close(); start(!cfg.TOKEN);
+});
+
+/* ---------- Start ---------- */
+async function start(demo) {
+  st.demo = demo; st.climate = null; st.light = null; hideError();
+  clearInterval(pollTimer);
+  if (demo) { demoData(); refresh(); return; }
+  setStatus("", "Connecting…");
+  await loadUnit();
+  await refresh();
+  pollTimer = setInterval(refresh, (cfg.POLL_SECONDS || 10) * 1000);
+}
+start(st.demo);
+</script>
+</body>
+</html>
