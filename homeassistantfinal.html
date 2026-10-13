@@ -5,7 +5,14 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <script src="https://cdn.jsdelivr.net/npm/sortablejs@1.15.0/Sortable.min.js"></script>
 
+
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Roboto:wght@400;500;700&display=swap" rel="stylesheet">
+
+
 <title>MY HOME ASSISTANT </title>
+
 
 <style>
 *{
@@ -14,6 +21,8 @@
     box-sizing:border-box;
     font-family:Segoe UI,sans-serif;
 }
+
+/* HEADER CODE FOR DATE AND TIME */
 .header{
     text-align: center; 
     gap: 240px,
@@ -26,20 +35,17 @@
     padding:20px;
     color:white;
 }
-
 .search-bar{
     display:flex;
     gap:10px;
     margin-bottom:15px;
 }
-
 .search-bar input{
     flex:1;
     padding:10px;
     border:none;
     border-radius:8px;
 }
-
 .search-bar button{
     background:#4caf50;
     color:white;
@@ -48,16 +54,13 @@
     border-radius:8px;
     cursor:pointer;
 }
-
 .search-bar button:hover{
     background:#45a049;
 }
-
 #bookResults{
     max-height:500px;
     overflow-y:auto;
 }
-
 .book-card{
     display:flex;
     gap:15px;
@@ -66,28 +69,23 @@
     background:#3a3a3a;
     border-radius:12px;
 }
-
 .book-card img{
     width:80px;
     height:120px;
     object-fit:cover;
     border-radius:8px;
 }
-
 .book-info{
     flex:1;
 }
-
 .book-info h3{
     margin:0 0 5px;
     font-size:16px;
 }
-
 .book-info p{
     margin:4px 0;
     color:#ddd;
 }
-
 .openlibrary-link{
     display:inline-block;
     margin-top:5px;
@@ -118,34 +116,28 @@
     width: auto;
     box-shadow: 0 4px 15px rgba(0,0,0,0.2);
 }
-
 #weather-city {
     font-size: 1.3rem;
     font-weight: bold;
 }
-
 #weather-icon {
     font-size: 3rem;
     margin: 10px 0;
 }
-
 #weather-temp {
     font-size: 2rem;
     font-weight: bold;
 }
-
 #weather-desc,
 #weather-humidity,
 #weather-wind {
     margin-top: 5px;
 }
-
 body {
     background: #f5f5f5;
     color: #222;
     transition: all 0.3s ease;
 }
-
 .widget {
     background: white;
     color: black;
@@ -160,13 +152,11 @@ body.dark-mode {
     background: #121212;
     color: #ffffff;
 }
-
 body.dark-mode .widget {
     background: #1e1e1e;
     color: white;
     box-shadow: 0 4px 15px rgba(0,0,0,0.4);
 }
-
 body.dark-mode input,
 body.dark-mode textarea,
 body.dark-mode select {
@@ -174,19 +164,16 @@ body.dark-mode select {
     color: white;
     border: 1px solid #444;
 }
-
 body.dark-mode button {
     background: white;
     color: #333;
 }
-
 body{
     min-height:100vh;
     background:url("https://th.bing.com/th/id/R.304f49a35c30eed0b4b101562aa6951b?rik=jb32REneCwAbog&riu=http%3a%2f%2fgetwallpapers.com%2fwallpaper%2ffull%2f7%2f5%2f4%2f232708.jpg&ehk=f8gVJeyVONFjhf5gEvE1iTdBoMiX7eEIzen0BwzPMpM%3d&risl=&pid=ImgRaw&r=0") center center/cover no-repeat fixed;
     color:white;
     padding:20px;
 }
-
 .dashboard{
     display:grid;
     gap: 15px;
@@ -197,7 +184,6 @@ body{
     grid-template-columns: repeat(3, 1fr);
     
 }
-
 .widget{
     background:rgba(255,255,255,0.15);
     backdrop-filter:blur(12px);
@@ -214,6 +200,8 @@ body{
     grid-auto-rows: 400px;
 
 }
+
+
 
 /* SPEED WIDGET */
 h2{
@@ -241,71 +229,60 @@ h2{
 
 
 /* TASKS */
-
 #taskInput{
     width:70%;
     padding:8px;
     border-radius:6px;
     border:none;
 }
-
 button{
     padding:8px 12px;
     cursor:pointer;
 }
-
 #taskList{
     list-style:none;
     padding:0;
     margin-top:15px;
 }
-
 #taskList li{
     padding:8px;
     display:flex;
     align-items:center;
     gap:10px;
 }
-
 .completed{
     text-decoration:line-through;
     color:#999;
 }
-
 .todo-widget{
     width:350px;
     padding:20px;
     background:#2b2b2b;
     border-radius:15px;
 }
-
 input[type="text"]{
     width:70%;
     padding:10px;
     border:none;
     border-radius:8px;
 }
-
 button{
     padding:10px;
     border:none;
     border-radius:8px;
     cursor:pointer;
 }
-
 ul{
     list-style:none;
     padding:0;
     margin-top:15px;
 }
-
 li{
     display:flex;
     align-items:center;
     gap:10px;
     padding:8px 0;
 }
-
 .task-checkbox{
     appearance:none;
     width:22px;
@@ -316,11 +293,9 @@ li{
     position:relative;
     background:#333;
 }
-
 .task-checkbox:checked{
     background:#c8a97e;
 }
-
 .task-checkbox:checked::after{
     content:"✓";
     color:white;
@@ -362,7 +337,6 @@ li{
     gap:10px;
     flex-wrap:wrap;
 }
-
 .stock-card{
     background:#374151;
     padding:20px;
@@ -377,7 +351,6 @@ li{
     padding: 15px;
     color: white;
 }
-
 .calendar-widget iframe {
     border-radius: 12px;
 }
@@ -686,7 +659,29 @@ setInterval(loadWeather, 600000);
 //STOCK 
 const STOCK_API_KEY = "db6kbc1r01qspnlcun60db6kbc1r01qspnlcun6g";
 const watchlist = [
-    { symbol: "SPY", name: "S&P500"}
+    { symbol: "SPY", name: "S&P500"},
+
+//DIFFERENT STOCK OPTIONS THAT YOU CAN ADD
+//SIMPLY UNCOMMENT THE ONES YOU WANT TO ADD
+//BY REMOVING THE // IN FRONT OF THE LINE
+    //{ symbol: "TQQQ", name: "TQQQ"},
+    //{ symbol: "AAPL", name: "Apple"},
+    //{ symbol: "MSFT", name: "Microsoft"},
+    //{ symbol: "GOOGL", name: "Alphabet"},
+    //{ symbol: "AMZN", name: "Amazon"},
+    //{ symbol: "TSLA", name: "Tesla"},
+    //{ symbol: "NVDA", name: "NVIDIA"},
+    //{ symbol: "META", name: "Meta Platforms"},
+    //{ symbol: "BRK.B", name: "Berkshire Hathaway"},
+    //{ symbol: "SPXL", name: "SPXL"},
+    //{ symbol: "VTI", name: "Vanguard Total Stock Market"},
+    //{ symbol: "VOO", name: "Vanguard S&P 500"},
+    //{ symbol: "QQQ", name: "Invesco QQQ Trust"},
+    //{ symbol: "IWM", name: "iShares Russell 2000"},
+    //{ symbol: "DIA", name: "SPDR Dow Jones Industrial Average"},
+    //{ symbol: "XLF", name: "Financial Select Sector SPDR Fund"},
+    //{ symbol: "XLK", name: "Technology Select Sector SPDR Fund"},
+    //{ symbol: "XLE", name: "Energy Select Sector SPDR Fund"}
 
 ];
 /* STOCK TRACKER*/ 
@@ -745,7 +740,6 @@ let tasks = JSON.parse(localStorage.getItem("tasks")) || [];
 function saveTasks(){
     localStorage.setItem("tasks",JSON.stringify(tasks));
 }
-
 function playCompletionSound(){
     const ctx = new(
         window.AudioContext ||
@@ -768,11 +762,9 @@ function note(freq, start) {
         osc.start(ctx.currentTime + start);
         osc.stop(ctx.currentTime + start + 0.3);
     }
-
     note(523.25, 0);   // C
     note(659.25, 0.08); // E
 }
-
 function addTask(){
     const input =
         document.getElementById("taskInput");
@@ -785,7 +777,6 @@ function addTask(){
     saveTasks();
     renderTasks();
 }
-
 function toggleTask(index){
     tasks[index].done =
         !tasks[index].done;
@@ -795,7 +786,6 @@ function toggleTask(index){
     saveTasks();
     renderTasks();
 }
-
 function renderTasks(){
 const list =
         document.getElementById("taskList");
