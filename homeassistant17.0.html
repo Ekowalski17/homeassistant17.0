@@ -546,6 +546,105 @@ li{
     padding:20px;
 }
 
+/* MUSIC PLAYER */
+.music-body{
+    display:flex;
+    flex-direction:column;
+}
+
+#musicDropZone{
+    padding:16px;
+    border:2px dashed rgba(255,255,255,0.45);
+    border-radius:12px;
+    cursor:pointer;
+    background:rgba(255,255,255,0.08);
+    transition:background .2s;
+}
+
+#musicDropZone:hover,
+#musicDropZone.over{
+    background:rgba(255,255,255,0.18);
+}
+
+#musicNowPlaying{
+    margin-top:12px;
+    font-weight:bold;
+    white-space:nowrap;
+    overflow:hidden;
+    text-overflow:ellipsis;
+}
+
+#musicAudio{
+    width:100%;
+    margin-top:12px;
+}
+
+.music-volume{
+    display:flex;
+    align-items:center;
+    gap:10px;
+    margin-top:10px;
+}
+
+.music-volume input[type=range]{
+    flex:1;
+}
+
+.music-controls{
+    display:flex;
+    flex-wrap:wrap;
+    gap:8px;
+}
+
+.music-controls button{
+    flex:1;
+    white-space:nowrap;
+}
+
+.speed-widget #musicClear{
+    width:100%;
+    margin-top:10px;
+}
+
+#musicPlaylist{
+    margin-top:10px;
+    text-align:left;
+}
+
+.music-song{
+    display:flex;
+    justify-content:space-between;
+    align-items:center;
+    gap:10px;
+    background:#374151;
+    margin:8px 0;
+    padding:10px;
+    border-radius:10px;
+}
+
+.music-song.active{
+    box-shadow:0 0 0 2px #34d399;
+}
+
+.music-song-name{
+    flex:1;
+    cursor:pointer;
+    overflow:hidden;
+    text-overflow:ellipsis;
+    white-space:nowrap;
+}
+
+.speed-widget .music-delete{
+    margin-top:0;
+    padding:4px 10px;
+    background:#ef4444;
+    color:white;
+}
+
+.speed-widget .music-delete:hover{
+    background:#dc2626;
+}
+
 
 </style>
 </head>
@@ -704,6 +803,34 @@ li{
     </div>
 </div>
 
+<!-- MUSIC PLAYER -->
+<div class="widget" id="musicWidget" data-h="520">
+    <div class="widget-inner">
+        <div class="widget-header" tabindex="0" aria-label="MUSIC PLAYER. Drag to move, or use the arrow keys.">
+            <span class="title">🎧 LO-FI MUSIC PLAYER</span>
+        </div>
+        <div class="widget-body speed-widget music-body">
+            <div id="musicDropZone">
+                📁 Click or Drop MP3 Files Here
+                <input type="file" id="musicUpload" multiple accept="audio/*" hidden>
+            </div>
+            <div id="musicNowPlaying">No song selected</div>
+            <audio id="musicAudio" controls></audio>
+            <div class="music-volume">
+                🔊 <input type="range" id="musicVolume" min="0" max="1" step="0.01" value="1" aria-label="Volume">
+            </div>
+            <div class="music-controls">
+                <button id="musicPrev">⏮ Prev</button>
+                <button id="musicPlay">▶ Play</button>
+                <button id="musicNext">⏭ Next</button>
+                <button id="musicShuffle">🔀 Shuffle</button>
+            </div>
+            <button id="musicClear">🗑 Clear Playlist</button>
+            <div id="musicPlaylist"></div>
+        </div>
+    </div>
+</div>
+
 </div>
 <script>
 
@@ -804,7 +931,9 @@ setInterval(loadWeather, 600000);
 //STOCK 
 const STOCK_API_KEY = "db6kbc1r01qspnlcun60db6kbc1r01qspnlcun6g";
 const watchlist = [
-    { symbol: "SPY", name: "S&P500"}
+    { symbol: "SPY", name: "S&P500"},
+    { symbol: "TQQQ", name: "ProShares UltraPro QQQ"},
+    { symbol: "SPXL", name: "Direxion Daily S&P 500 Bull 3X Shares"},
 
 ];
 /* STOCK TRACKER*/ 
@@ -1216,6 +1345,180 @@ loadLPGA();
 /* refresh every 5 minutes */
 setInterval(loadLPGA, 300000);
 
+
+//MUSIC PLAYER
+const musicAudio = document.getElementById("musicAudio");
+const musicUpload = document.getElementById("musicUpload");
+const musicDropZone = document.getElementById("musicDropZone");
+const musicPlaylistDiv = document.getElementById("musicPlaylist");
+const musicNowPlaying = document.getElementById("musicNowPlaying");
+const musicVolume = document.getElementById("musicVolume");
+const musicPlayBtn = document.getElementById("musicPlay");
+
+let musicDB;
+let songs = [];
+let currentSongIndex = -1;
+let currentSongURL = null;
+
+const musicRequest = indexedDB.open("PlaylistDB", 1);
+musicRequest.onupgradeneeded = e => {
+    musicDB = e.target.result;
+    musicDB.createObjectStore("songs", { keyPath: "name" });
+};
+musicRequest.onsuccess = e => {
+    musicDB = e.target.result;
+    loadPlaylist();
+    const savedVol = localStorage.getItem("musicVolume");
+    if (savedVol) {
+        musicAudio.volume = savedVol;
+        musicVolume.value = savedVol;
+    }
+};
+
+function setSongSource(file){
+    if (currentSongURL) URL.revokeObjectURL(currentSongURL);
+    currentSongURL = URL.createObjectURL(file);
+    musicAudio.src = currentSongURL;
+    musicNowPlaying.textContent = "🎵 " + file.name;
+}
+
+function saveSong(file){
+    const tx = musicDB.transaction(["songs"], "readwrite");
+    tx.objectStore("songs").put(file);
+    tx.oncomplete = () => loadPlaylist();
+}
+
+function loadPlaylist(){
+    const tx = musicDB.transaction(["songs"], "readonly");
+    tx.objectStore("songs").getAll().onsuccess = e => {
+        songs = e.target.result;
+        renderPlaylist();
+        restoreLastSong();
+    };
+}
+
+function renderPlaylist(){
+    musicPlaylistDiv.innerHTML = "";
+    songs.forEach((file, index) => {
+        const row = document.createElement("div");
+        row.className = "music-song";
+        if (index === currentSongIndex) row.classList.add("active");
+        row.innerHTML = `
+            <div class="music-song-name"></div>
+            <button class="music-delete" aria-label="Remove song">✖</button>
+        `;
+        row.querySelector(".music-song-name").textContent = "🎵 " + file.name;
+        row.querySelector(".music-song-name").onclick = () => playSong(index);
+        row.querySelector(".music-delete").onclick = () => deleteSong(file.name);
+        musicPlaylistDiv.appendChild(row);
+    });
+}
+
+function playSong(index){
+    currentSongIndex = index;
+    const file = songs[index];
+    setSongSource(file);
+    localStorage.setItem("musicCurrentSong", file.name);
+    localStorage.setItem("musicPosition", 0);   // new song starts from the beginning
+    musicAudio.onloadedmetadata = null;
+    musicAudio.play();
+    renderPlaylist();
+}
+
+function deleteSong(name){
+    const tx = musicDB.transaction(["songs"], "readwrite");
+    tx.objectStore("songs").delete(name);
+    tx.oncomplete = loadPlaylist;
+}
+
+function restoreLastSong(){
+    if (!musicAudio.paused) return;   // don't interrupt what's playing
+    const lastSong = localStorage.getItem("musicCurrentSong");
+    if (!lastSong) return;
+    const index = songs.findIndex(s => s.name === lastSong);
+    if (index > -1){
+        currentSongIndex = index;
+        setSongSource(songs[index]);
+        renderPlaylist();
+        musicAudio.onloadedmetadata = () => {
+            const pos = localStorage.getItem("musicPosition");
+            if (pos) musicAudio.currentTime = parseFloat(pos);
+        };
+    }
+}
+
+function nextSong(){
+    if (songs.length === 0) return;
+    playSong((currentSongIndex + 1) % songs.length);
+}
+
+function previousSong(){
+    if (songs.length === 0) return;
+    playSong((currentSongIndex - 1 + songs.length) % songs.length);
+}
+
+document.getElementById("musicNext").onclick = nextSong;
+document.getElementById("musicPrev").onclick = previousSong;
+document.getElementById("musicShuffle").onclick = () => {
+    if (songs.length === 0) return;
+    playSong(Math.floor(Math.random() * songs.length));
+};
+
+musicPlayBtn.onclick = () => {
+    if (!musicAudio.src){
+        if (songs.length) playSong(0);
+        return;
+    }
+    if (musicAudio.paused) musicAudio.play();
+    else musicAudio.pause();
+};
+
+musicAudio.addEventListener("play", () => { musicPlayBtn.textContent = "⏸ Pause"; });
+musicAudio.addEventListener("pause", () => { musicPlayBtn.textContent = "▶ Play"; });
+musicAudio.addEventListener("timeupdate", () => {
+    localStorage.setItem("musicPosition", musicAudio.currentTime);
+});
+musicAudio.addEventListener("ended", nextSong);
+
+musicVolume.addEventListener("input", () => {
+    musicAudio.volume = musicVolume.value;
+    localStorage.setItem("musicVolume", musicVolume.value);
+});
+
+musicDropZone.onclick = () => musicUpload.click();
+musicUpload.onclick = e => e.stopPropagation();
+musicUpload.onchange = () => {
+    [...musicUpload.files].forEach(file => saveSong(file));
+    musicUpload.value = "";
+};
+musicDropZone.addEventListener("dragover", e => {
+    e.preventDefault();
+    musicDropZone.classList.add("over");
+});
+musicDropZone.addEventListener("dragleave", () => musicDropZone.classList.remove("over"));
+musicDropZone.addEventListener("drop", e => {
+    e.preventDefault();
+    musicDropZone.classList.remove("over");
+    [...e.dataTransfer.files]
+        .filter(file => file.type.startsWith("audio/"))
+        .forEach(file => saveSong(file));
+});
+
+document.getElementById("musicClear").onclick = () => {
+    if (!confirm("Delete entire playlist?")) return;
+    const tx = musicDB.transaction(["songs"], "readwrite");
+    tx.objectStore("songs").clear();
+    localStorage.removeItem("musicCurrentSong");
+    localStorage.removeItem("musicPosition");
+    musicAudio.pause();
+    musicAudio.removeAttribute("src");
+    musicAudio.load();
+    musicPlaylistDiv.innerHTML = "";
+    songs = [];
+    currentSongIndex = -1;
+    musicNowPlaying.textContent = "No song selected";
+};
+
 </script>
 
 <script>
@@ -1281,15 +1584,25 @@ setInterval(loadLPGA, 300000);
 
     function applyLayout(){
         var saved = loadLayout();
-        var ok = saved && widgets.every(function(el){
-            var s = saved[el.id];
-            return s && isFinite(s.x) && isFinite(s.y) && isFinite(s.w) && isFinite(s.h);
-        });
+        function valid(s){ return s && isFinite(s.x) && isFinite(s.y) && isFinite(s.w) && isFinite(s.h); }
+        var ok = saved && widgets.some(function(el){ return valid(saved[el.id]); });
         if (ok){
             customized = true;
+            var bottom = 0, newOnes = [];
             widgets.forEach(function(el){
                 var s = saved[el.id];
-                place(el, s.x, s.y, s.w, s.h);
+                if (valid(s)){
+                    place(el, s.x, s.y, s.w, s.h);
+                    bottom = Math.max(bottom, s.y + s.h);
+                } else {
+                    newOnes.push(el);
+                }
+            });
+            /* widgets added since the layout was saved go underneath it */
+            newOnes.forEach(function(el){
+                var h = +el.dataset.h || 300;
+                place(el, 0, bottom + GAP, 400, h);
+                bottom += GAP + h;
             });
             fitBoard();
         } else {
