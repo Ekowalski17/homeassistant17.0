@@ -891,6 +891,43 @@ li{
 #lionsWidget .li-updated{ margin-top:10px; font-size:11px; color:#d1d5db; }
 #lionsWidget .li-error{ color:#fca5a5; font-size:13px; padding:10px 0; }
 
+/* SUBURBAN HOCKEY WIDGET */
+#hockeyWidget .hk-body{ text-align:left; }
+#hockeyWidget select{
+    width:100%; padding:7px 8px; border-radius:10px; border:1px solid rgba(255,255,255,0.3);
+    background:rgba(0,0,0,0.28); color:white; font-size:13px; margin:0;
+}
+#hockeyWidget option{ color:#222; background:white; }
+#hockeyWidget .hk-tabs{ display:flex; gap:6px; margin-top:8px; }
+#hockeyWidget .hk-tabs button{
+    flex:1; margin:0; padding:7px 4px; border-radius:10px; font-size:13px;
+    background:rgba(255,255,255,0.18); color:white; border:1px solid rgba(255,255,255,0.25);
+}
+#hockeyWidget .hk-tabs button.on{ background:white; color:#333; border-color:white; font-weight:700; }
+#hockeyWidget .hk-h{ margin:14px 0 4px; font-size:13px; font-weight:700; }
+#hockeyWidget .hk-day{ margin:14px 0 2px; font-size:11px; color:#d1d5db; text-transform:uppercase; letter-spacing:1px; }
+#hockeyWidget .hk-tbl{ width:100%; border-collapse:collapse; font-size:13px; font-variant-numeric:tabular-nums; }
+#hockeyWidget .hk-tbl th{ font-size:11px; font-weight:600; color:#d1d5db; text-align:right; padding:3px 4px; }
+#hockeyWidget .hk-tbl td{ padding:5px 4px; text-align:right; border-top:1px solid rgba(255,255,255,0.12); }
+#hockeyWidget .hk-tbl th:first-child, #hockeyWidget .hk-tbl td:first-child{ text-align:left; }
+#hockeyWidget .hk-tbl td.nm{ max-width:0; width:100%; overflow:hidden; text-overflow:ellipsis; white-space:nowrap; }
+#hockeyWidget .hk-tbl .pt{ font-weight:700; }
+#hockeyWidget .hk-tbl .rk{ width:22px; color:#d1d5db; }
+#hockeyWidget .hk-game{ background:rgba(0,0,0,0.22); border:1px solid rgba(255,255,255,0.15); border-radius:12px; padding:8px 10px; margin:6px 0; }
+#hockeyWidget .hk-line{ display:flex; justify-content:space-between; gap:8px; font-size:14px; }
+#hockeyWidget .hk-line.l{ opacity:.72; }
+#hockeyWidget .hk-line.w{ font-weight:700; }
+#hockeyWidget .hk-line b.sc{ font-size:1.15rem; }
+#hockeyWidget .hk-meta{ margin-top:3px; font-size:11px; color:#d1d5db; }
+#hockeyWidget .hk-pill{ display:inline-block; padding:0 7px; margin-right:6px; border-radius:999px; background:rgba(255,255,255,0.2); font-weight:700; }
+#hockeyWidget .hk-pill.live{ background:#2563eb; }
+#hockeyWidget details{ margin-top:4px; }
+#hockeyWidget summary{ font-size:12px; color:#93c5fd; cursor:pointer; }
+#hockeyWidget .hk-sc{ font-size:12px; color:#e5e7eb; margin:4px 0 0; }
+#hockeyWidget .hk-empty{ padding:14px 0; color:#d1d5db; font-size:13px; text-align:center; }
+#hockeyWidget .hk-updated{ margin-top:12px; font-size:11px; color:#d1d5db; }
+#hockeyWidget .hk-updated a{ color:#93c5fd; }
+
 /* PURA DIFFUSER WIDGET */
 .pura-body{ text-align:left; }
 .pura-body button{ margin:0; }
@@ -1427,6 +1464,24 @@ body.dark-mode .pura-body .pura-switch[aria-checked="true"]{ background:#4caf50;
             </div>
             <div class="li-leaders" id="liLeaders"></div>
             <div class="li-updated" id="liUpdated"></div>
+        </div>
+    </div>
+</div>
+
+
+
+<!-- SUBURBAN HOCKEY STATS -->
+<div class="widget" id="hockeyWidget" data-h="560">
+    <div class="widget-inner">
+        <div class="widget-header" tabindex="0" aria-label="SUBURBAN HOCKEY STATS. Drag to move, or use the arrow keys.">
+            <span class="title">🏒 SUBURBAN HOCKEY</span>
+        </div>
+        <div class="widget-body speed-widget hk-body">
+            <select id="hkDiv" aria-label="League"></select>
+            <div class="hk-tabs" id="hkTabs" role="group" aria-label="Hockey views"></div>
+            <div id="hkOut"></div>
+            <div class="hk-updated">Rochester · Fall/Winter 2026–27 · snapshot through Tue Oct 13 ·
+                <a href="https://gamesheetstats.com/seasons/15775/games" target="_blank" rel="noopener">live stats</a></div>
         </div>
     </div>
 </div>
@@ -3686,6 +3741,164 @@ pomoRender();
     if (!C.token) $("puraConn").open = true;
     render();
     if (C.token && C.device){ connState("Connecting…"); startLive(); }
+})();
+</script>
+
+<script>
+/* SUBURBAN HOCKEY WIDGET */
+(function(){
+const DIVS = ["Wednesday 40+ Draft","Tuesday 18+ C","Tuesday 18+ D","Thursday 25+ C","Thursday 25+ D","Sunday Ray Kraemer","Sunday Ralph Bammert","Sunday John Stansik","Women's Sunday"];
+
+/* Team records as W-L-x-x straight from the source; points = 2*W + third + fourth (win 2, OT loss 1, tie 1) */
+const TEAMS = {
+ "Wednesday 40+ Draft":[["Havok","4-0-0-0"],["Colossus","4-0-0-0"],["Magneto","4-0-0-0"],["Hawkeye","3-1-0-0"],["Iron Man","3-1-0-0"],["Deadpool","2-2-0-0"],["Mighty Thor","1-3-0-0"],["Daredevil","1-3-0-0"],["Juggernaut","1-3-0-0"],["Wolverine","1-3-0-0"],["Quick Silver","0-2-2-0"],["Ice Man","0-4-0-0"]],
+ "Tuesday 18+ C":[["FM Contracting","4-2-0-0"],["Hatrick Swayze","3-2-0-0"],["Shipset","3-2-0-0"],["Shrimplash","2-3-0-0"],["Ice Holes (Tuesday)","2-3-0-0"],["Deutsch Bags","2-4-0-0"]],
+ "Tuesday 18+ D":[["Screaming Beavers","4-1-0-0"],["USA Plumbing","3-0-0-0"],["Puck Dynasty","3-1-1-0"],["Busch League Beauties","3-1-0-0"],["Nordiques","2-2-0-0"],["Fightin' Pylons","2-3-0-0"],["Bearly Sober","0-3-0-0"],["Hot Dogs","0-5-0-0"]],
+ "Thursday 25+ C":[["Degener-Rats","3-0-0-0"],["Spitfires","3-0-0-0"],["Creakers","2-1-0-0"],["Amateurs","2-1-0-0"],["Clams HC","2-3-0-0"],["Local 586","2-3-0-0"],["Oxford Gravel Cats","1-3-1-0"],["Ice Holes (Thursday)","1-4-0-0"]],
+ "Thursday 25+ D":[["Crusaders","5-0-0-0"],["Silver Snakes","4-1-0-0"],["Skeezers","3-1-1-0"],["The Admirals","3-2-0-0"],["The Old Puckers","2-3-0-0"],["Devils","2-3-0-0"],["Marksmen","1-4-0-0"],["The Black Sails","0-5-0-0"]],
+ "Sunday Ray Kraemer":[["Highlanders","5-0-0-0"],["Thrashers","4-0-1-0"],["Tropics","2-3-0-0"],["Barflies","2-3-0-0"],["Warhawks","2-3-0-0"],["Team Elbo","2-3-0-0"],["Old Time Hockey","2-3-0-0"],["Big Dog Marine","1-4-0-0"]],
+ "Sunday Ralph Bammert":[["Ice Holes (Sunday)","4-1-0-0"],["Terrible Teds","4-1-0-0"],["Knights","4-1-0-0"],["Puck Norris","3-2-0-0"],["60 U Vipers","3-2-0-0"],["Dogs","3-2-0-0"],["Serpents","2-3-0-0"],["Hamlin Pub Sharks","2-3-0-0"],["Coyotes","2-2-1-0"],["MichiGoats","1-3-1-0"],["Vipers","1-4-0-0"],["Blue Barracudas","0-4-1-0"]],
+ "Sunday John Stansik":[["Relax the Back","5-0-0-0"],["The Replacements","4-1-0-0"],["Doris & the Whalesharks","3-2-0-0"],["Gorilla Panic","2-3-0-0"],["Crusaders","1-4-0-0"],["The Fellas","1-3-1-0"]],
+ "Women's Sunday":[["TEAM-WHITE","1-0-0-0"],["TEAM-BLUE","1-0-0-0"],["TEAM-PURPLE","0-1-0-0"],["TEAM-RED","0-1-0-0"]]
+};
+
+/* Finals: [date, time, division, visitor, vGoals, home, hGoals, overtime, visitor scorers, home scorers] ("Name xN") */
+const FINALS = [
+ ["Tue Oct 13","9:15 PM","Tuesday 18+ C","Deutsch Bags",3,"FM Contracting",7,0,"Robert Lauro;Donald Wood;Cale Denison","Andy Huff x3;Craig Schmehl x2;Armando Ybarra;Darren Brady"],
+ ["Sun Oct 11","10:00 PM","Sunday John Stansik","Crusaders",3,"Relax the Back",4,0,"Eric Chase;Jimmy Jackson;Darin Stocker","Ryan Smith x3;Jack Kneiding"],
+ ["Sun Oct 11","9:30 PM","Sunday Ralph Bammert","MichiGoats",0,"Serpents",1,0,"","Cameron Ban"],
+ ["Sun Oct 11","9:15 PM","Sunday Ray Kraemer","Highlanders",7,"Old Time Hockey",2,0,"John Paige x2;Andrew Krolikowski;Alex Mellerwicz;Aaron Chapie x2;Nick Paige","Jacob Wlodarczyk;James Roble"],
+ ["Sun Oct 11","9:00 PM","Sunday Ray Kraemer","Tropics",6,"Barflies",3,0,"Nolan Carnes;Ryan Kerchoff;Michael James;Collin Kerchoff;Kyle Socrainte;Allan Frank","Aaron Jagdfeld;Ben Hammond x2"],
+ ["Sun Oct 11","8:45 PM","Sunday Ralph Bammert","Ice Holes (Sunday)",5,"Puck Norris",2,0,"Adam Janes;Chris Balagna;Michael Carrier;Bryan Hill;Lucas Bayagich","Cameron Paquette;Darryn Jax"],
+ ["Sun Oct 11","8:15 PM","Sunday Ralph Bammert","Coyotes",3,"Terrible Teds",4,1,"Paul Petrous;Dante Pastoria;Zachary Evans","Zachary Kerr x2;Alex Lekocaj;Patrick Linehan"],
+ ["Sun Oct 11","8:00 PM","Sunday Ray Kraemer","Team Elbo",5,"Warhawks",9,0,"Maxx Savel x3;Cody Dest-Declark;Steven Ledington Jr","Giovanni Bugli;Mike Moroso x2;Domenic Calagna;Cristian Adragna x2;Steven Gilliland;Sean Kruk;Anthony Benvenuti"],
+ ["Sun Oct 11","7:30 PM","Sunday Ralph Bammert","Dogs",5,"60 U Vipers",4,0,"Blake Frantz x3;Joe Cipriano;Kyle Rojem","Myles Rutledge;Patrick Witmer;Dylan Moran;Josh Browning"],
+ ["Sun Oct 11","7:15 PM","Women's Sunday","TEAM-RED",3,"TEAM-WHITE",10,0,"Kay Sicheneder;Shelby Shinavier;Laina Poyhonen","Kate Kramm;Kelly Atkins x3;Kendra Gott;Emma Townsend;Sarah Lehtinen x2;Veronika Orman x2"],
+ ["Sun Oct 11","7:00 PM","Sunday Ralph Bammert","Blue Barracudas",4,"Knights",8,0,"Joshua Pokrefky x2;Joseph Korolewicz;Brian Clements","Will Bromley;Collin Dickey;Danny Jackson x3;Kyle Adkins x2;Kyle Kulesza"],
+ ["Sun Oct 11","6:30 PM","Sunday John Stansik","The Fellas",3,"Gorilla Panic",4,1,"Jacob Androsuk;William Capizzi;David Tomlian","Joe Shehan x2;Eric Lohr;Jeff Morrissey"],
+ ["Sun Oct 11","6:15 PM","Women's Sunday","TEAM-BLUE",2,"TEAM-PURPLE",1,0,"Deborah Newman;Mckayla Marcola","Ivy Durocher"],
+ ["Sun Oct 11","6:00 PM","Sunday Ralph Bammert","Vipers",4,"Hamlin Pub Sharks",1,0,"Ivan Hewines;Sante Balonga;Zachary Wright;Austen Fischer","Mitch Tucker"],
+ ["Sun Oct 11","5:15 PM","Sunday Ray Kraemer","Big Dog Marine",1,"Thrashers",5,0,"Tyler Berden","Nicholas Marini;Andrew Miller;Foster Buchanan;Samuel Vicari;Liam Oatman"],
+ ["Sun Oct 11","5:00 PM","Sunday John Stansik","The Replacements",4,"Doris & the Whalesharks",3,0,"Ian Grzesik x2;Nicholas Hymes;Michael Spagnola","Anthony Imbrunone;Douglas Shea;Ryan Stockwell"],
+ ["Thu Oct 8","11:00 PM","Thursday 25+ C","Degener-Rats",4,"Clams HC",3,0,"Joe Shehan x2;Spencer Wood;Joseph Warner","Hunter Jenuwine;Nick Paige;Rob Purgatori"],
+ ["Thu Oct 8","11:00 PM","Thursday 25+ D","Skeezers",2,"The Old Puckers",3,0,"Jeremy McElroy;Joe Engle","James Westfall;Paul Crocenzi;Ryan Palazzola"],
+ ["Thu Oct 8","10:30 PM","Thursday 25+ C","Ice Holes (Thursday)",1,"Creakers",3,0,"Bryan Hill","John DiMartino x2;Ian Cosgrove"]
+];
+
+/* Upcoming / under way: [date, time, rink, division, visitor, home, status] */
+const UPCOMING = [
+ ["Tue Oct 13","9:30 PM","Rink 1","Tuesday 18+ C","Shrimplash","Hatrick Swayze","live"],
+ ["Tue Oct 13","10:15 PM","Rink 3","Tuesday 18+ D","Puck Dynasty","Busch League Beauties","live"],
+ ["Tue Oct 13","10:30 PM","Rink 1","Tuesday 18+ C","Shipset","Ice Holes (Tuesday)",""],
+ ["Tue Oct 13","10:30 PM","Rink 2","Tuesday 18+ D","USA Plumbing","Nordiques",""],
+ ["Tue Oct 13","11:15 PM","Rink 3","Tuesday 18+ D","Screaming Beavers","Fightin' Pylons",""],
+ ["Tue Oct 13","11:30 PM","Rink 2","Tuesday 18+ D","Hot Dogs","Bearly Sober",""],
+ ["Wed Oct 14","9:15 PM","Rink 1","Wednesday 40+ Draft","Quick Silver","Havok",""],
+ ["Wed Oct 14","9:45 PM","Rink 2","Wednesday 40+ Draft","Colossus","Hawkeye",""],
+ ["Wed Oct 14","9:45 PM","Rink 3","Wednesday 40+ Draft","Deadpool","Mighty Thor",""],
+ ["Wed Oct 14","10:15 PM","Rink 1","Wednesday 40+ Draft","Magneto","Daredevil",""],
+ ["Wed Oct 14","10:45 PM","Rink 2","Wednesday 40+ Draft","Ice Man","Juggernaut",""],
+ ["Wed Oct 14","10:45 PM","Rink 3","Wednesday 40+ Draft","Wolverine","Iron Man",""],
+ ["Thu Oct 15","9:30 PM","Rink 1","Thursday 25+ D","Skeezers","The Black Sails",""],
+ ["Thu Oct 15","9:30 PM","Rink 2","Thursday 25+ C","Ice Holes (Thursday)","Clams HC",""],
+ ["Thu Oct 15","10:00 PM","Rink 3","Thursday 25+ C","Creakers","Spitfires",""],
+ ["Thu Oct 15","10:30 PM","Rink 1","Thursday 25+ C","Degener-Rats","Oxford Gravel Cats",""],
+ ["Thu Oct 15","10:30 PM","Rink 2","Thursday 25+ D","Marksmen","The Old Puckers",""],
+ ["Thu Oct 15","11:00 PM","Rink 3","Thursday 25+ D","Silver Snakes","The Admirals",""],
+ ["Thu Oct 15","11:30 PM","Rink 1","Thursday 25+ C","Amateurs","Local 586",""],
+ ["Thu Oct 15","11:30 PM","Rink 2","Thursday 25+ D","Crusaders","Devils",""],
+ ["Sun Oct 18","5:15 PM","Rink 3","Sunday Ralph Bammert","Knights","Ice Holes (Sunday)",""],
+ ["Sun Oct 18","5:15 PM","Rink 1","Sunday Ray Kraemer","Warhawks","Tropics",""],
+ ["Sun Oct 18","5:45 PM","Rink 2","Sunday John Stansik","Crusaders","Doris & the Whalesharks",""],
+ ["Sun Oct 18","6:15 PM","Rink 3","Sunday Ralph Bammert","60 U Vipers","Coyotes",""],
+ ["Sun Oct 18","6:15 PM","Rink 1","Sunday Ralph Bammert","Blue Barracudas","Vipers",""],
+ ["Sun Oct 18","7:15 PM","Rink 3","Sunday Ray Kraemer","Big Dog Marine","Old Time Hockey",""],
+ ["Sun Oct 18","7:15 PM","Rink 1","Sunday Ralph Bammert","Terrible Teds","Puck Norris",""],
+ ["Sun Oct 18","8:15 PM","Rink 3","Sunday John Stansik","The Fellas","Relax the Back",""],
+ ["Sun Oct 18","8:15 PM","Rink 1","Sunday Ralph Bammert","Serpents","Hamlin Pub Sharks",""],
+ ["Sun Oct 18","8:45 PM","Rink 2","Sunday Ray Kraemer","Highlanders","Thrashers",""],
+ ["Sun Oct 18","9:15 PM","Rink 3","Sunday Ralph Bammert","Dogs","MichiGoats",""]
+];
+
+    var $ = function(id){ return document.getElementById(id); };
+    var esc = function(s){ return String(s).replace(/[&<>"]/g, function(c){ return {'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[c]; }); };
+    var parseSc = function(s){ return s ? s.split(';').map(function(x){ var m = x.trim().match(/^(.*?)(?: x(\d+))?$/); return {n:m[1], g:+(m[2]||1)}; }) : []; };
+    var fmtSc = function(s){ return parseSc(s).map(function(p){ return p.g > 1 ? '<b>' + esc(p.n) + '</b> (' + p.g + ')' : esc(p.n); }).join(', '); };
+    var LABELS = {standings:"Standings", scores:"Scores", schedule:"Schedule", leaders:"Scorers"};
+    var tab = "standings", div = "all";
+
+    function standingsTable(list){
+        var rows = list.map(function(t){
+            var p = t[1].split('-').map(Number);
+            return {t:t[0], w:p[0], l:p[1], o:p[2]+p[3], gp:p[0]+p[1]+p[2]+p[3], pts:2*p[0]+p[2]+p[3]};
+        }).sort(function(a,b){ return b.pts-a.pts || b.w-a.w || a.gp-b.gp; });
+        return '<table class="hk-tbl"><thead><tr><th>Team</th><th>GP</th><th>W</th><th>L</th><th>OT/T</th><th>PTS</th></tr></thead><tbody>' +
+            rows.map(function(r){ return '<tr><td class="nm">' + esc(r.t) + '</td><td>' + r.gp + '</td><td>' + r.w + '</td><td>' + r.l + '</td><td>' + r.o + '</td><td class="pt">' + r.pts + '</td></tr>'; }).join('') +
+            '</tbody></table>';
+    }
+    function viewStandings(){
+        var ds = div === "all" ? DIVS : [div];
+        return ds.map(function(d){ return '<div class="hk-h">' + esc(d) + '</div>' + standingsTable(TEAMS[d]); }).join('');
+    }
+    function gameCard(g){
+        var vw = g[4] > g[6];
+        var sc = (g[8] || g[9]) ? '<details><summary>Goal scorers</summary><p class="hk-sc"><b>' + esc(g[3]) + ':</b> ' + (fmtSc(g[8]) || '—') + '</p><p class="hk-sc"><b>' + esc(g[5]) + ':</b> ' + (fmtSc(g[9]) || '—') + '</p></details>' : '';
+        return '<div class="hk-game"><div class="hk-line ' + (vw?'w':'l') + '"><span>' + esc(g[3]) + '</span><b class="sc">' + g[4] + '</b></div>' +
+            '<div class="hk-line ' + (vw?'l':'w') + '"><span>' + esc(g[5]) + '</span><b class="sc">' + g[6] + '</b></div>' +
+            '<div class="hk-meta"><span class="hk-pill">Final' + (g[7] ? ' / OT' : '') + '</span>' + esc(g[2]) + ' · ' + esc(g[1]) + '</div>' + sc + '</div>';
+    }
+    function grouped(items, key, card){
+        var out = '', last = '';
+        items.forEach(function(g){ if (g[key] !== last){ out += '<div class="hk-day">' + g[key] + '</div>'; last = g[key]; } out += card(g); });
+        return out;
+    }
+    function viewScores(){
+        var gs = FINALS.filter(function(g){ return div === "all" || g[2] === div; });
+        return gs.length ? grouped(gs, 0, gameCard) : '<div class="hk-empty">No completed games in this league yet.</div>';
+    }
+    function viewSchedule(){
+        var gs = UPCOMING.filter(function(g){ return div === "all" || g[3] === div; });
+        if (!gs.length) return '<div class="hk-empty">No upcoming games listed for this league.</div>';
+        return grouped(gs, 0, function(g){
+            return '<div class="hk-game"><div class="hk-line"><span>' + esc(g[4]) + '</span></div><div class="hk-line"><span>at ' + esc(g[5]) + '</span></div>' +
+                '<div class="hk-meta">' + (g[6] === 'live' ? '<span class="hk-pill live">Under way</span>' : '') + esc(g[1]) + ' · ' + esc(g[2]) + ' · ' + esc(g[3]) + '</div></div>';
+        });
+    }
+    function viewLeaders(){
+        var m = {};
+        FINALS.forEach(function(g){
+            if (div !== "all" && g[2] !== div) return;
+            [[g[3], g[8]], [g[5], g[9]]].forEach(function(x){
+                parseSc(x[1]).forEach(function(p){
+                    var o = m[p.n] || (m[p.n] = {n:p.n, g:0, teams:[]});
+                    o.g += p.g; if (o.teams.indexOf(x[0]) < 0) o.teams.push(x[0]);
+                });
+            });
+        });
+        var arr = Object.keys(m).map(function(k){ return m[k]; }).sort(function(a,b){ return b.g-a.g || a.n.localeCompare(b.n); });
+        if (!arr.length) return '<div class="hk-empty">No goals recorded yet.</div>';
+        var multi = arr.filter(function(p){ return p.g >= 2; });
+        var top = multi.length >= 5 ? multi : arr.slice(0, 15);
+        var rank = 0, prev = null;
+        var rows = top.map(function(p, i){
+            if (p.g !== prev){ rank = i + 1; prev = p.g; }
+            return '<tr><td class="rk">' + rank + '</td><td class="nm">' + esc(p.n) + '<br><span style="font-size:11px;color:#d1d5db">' + esc(p.teams.join(' / ')) + '</span></td><td class="pt">' + p.g + '</td></tr>';
+        }).join('');
+        return '<div class="hk-h">Goal leaders (recent games)</div><table class="hk-tbl"><thead><tr><th>#</th><th>Player</th><th>G</th></tr></thead><tbody>' + rows + '</tbody></table>';
+    }
+    var VIEWS = {standings:viewStandings, scores:viewScores, schedule:viewSchedule, leaders:viewLeaders};
+
+    function render(){
+        $("hkTabs").innerHTML = Object.keys(LABELS).map(function(k){
+            return '<button type="button" data-k="' + k + '" class="' + (k === tab ? 'on' : '') + '" aria-pressed="' + (k === tab) + '">' + LABELS[k] + '</button>';
+        }).join('');
+        $("hkOut").innerHTML = VIEWS[tab]();
+    }
+    $("hkDiv").innerHTML = '<option value="all">All leagues</option>' + DIVS.map(function(d){ return '<option value="' + esc(d) + '">' + esc(d) + '</option>'; }).join('');
+    $("hkDiv").addEventListener("change", function(e){ div = e.target.value; render(); });
+    $("hkTabs").addEventListener("click", function(e){ var b = e.target.closest("button"); if (b){ tab = b.dataset.k; render(); } });
+    render();
+
 })();
 </script>
 
