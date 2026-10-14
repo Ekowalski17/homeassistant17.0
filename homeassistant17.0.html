@@ -890,6 +890,197 @@ li{
 #lionsWidget .li-row .li-big{ font-weight:700; font-size:15px; text-align:right; }
 #lionsWidget .li-updated{ margin-top:10px; font-size:11px; color:#d1d5db; }
 #lionsWidget .li-error{ color:#fca5a5; font-size:13px; padding:10px 0; }
+
+/* PURA DIFFUSER WIDGET */
+.pura-body{ text-align:left; }
+.pura-body button{ margin:0; }
+.pura-top{
+    display:flex;
+    align-items:center;
+    justify-content:space-between;
+    gap:12px;
+    padding:12px 14px;
+    border-radius:14px;
+    background:rgba(255,255,255,0.12);
+}
+.pura-status{ font-weight:700; font-size:1.05rem; }
+.pura-status-sub{ font-size:13px; opacity:0.85; margin-top:2px; }
+.pura-orb{
+    width:14px; height:14px; border-radius:50%;
+    background:rgba(255,255,255,0.35);
+    display:inline-block; margin-right:8px; vertical-align:middle;
+}
+.pura-orb.on{ background:#8bc34a; box-shadow:0 0 10px 2px rgba(139,195,74,0.7); }
+.pura-switch{
+    position:relative;
+    width:52px; height:30px;
+    border-radius:999px;
+    background:rgba(255,255,255,0.3);
+    border:none; padding:0; cursor:pointer;
+    flex:0 0 auto;
+    transition:background .2s;
+}
+.pura-switch::after{
+    content:"";
+    position:absolute; top:3px; left:3px;
+    width:24px; height:24px; border-radius:50%;
+    background:white;
+    transition:transform .2s;
+}
+.pura-switch[aria-checked="true"]{ background:#4caf50; }
+.pura-switch[aria-checked="true"]::after{ transform:translateX(22px); }
+.pura-switch:focus-visible,
+.pura-body button:focus-visible,
+.pura-body input:focus-visible{ outline:2px solid rgba(255,255,255,0.9); outline-offset:2px; }
+.pura-sec{ margin-top:14px; }
+.pura-label{
+    font-size:12px;
+    font-weight:700;
+    letter-spacing:0.06em;
+    text-transform:uppercase;
+    opacity:0.85;
+    margin-bottom:6px;
+    display:flex;
+    justify-content:space-between;
+    align-items:baseline;
+}
+.pura-label span{ text-transform:none; letter-spacing:0; font-weight:400; }
+.pura-seg{ display:flex; gap:6px; flex-wrap:wrap; }
+.pura-body .pura-seg button,
+.pura-body .pura-chip{
+    flex:1 1 0;
+    min-width:44px;
+    padding:8px 6px;
+    background:rgba(255,255,255,0.15);
+    color:white;
+    border:1px solid rgba(255,255,255,0.25);
+    border-radius:10px;
+    font-size:13px;
+    cursor:pointer;
+}
+.pura-body .pura-seg button:hover{ background:rgba(255,255,255,0.28); }
+.pura-body .pura-seg button.sel,
+.pura-body .pura-seg button[aria-pressed="true"]{
+    background:white;
+    color:#444;
+    border-color:white;
+    font-weight:700;
+}
+.pura-slot{
+    padding:10px 12px;
+    border-radius:12px;
+    background:rgba(255,255,255,0.12);
+    border:1px solid transparent;
+    margin-bottom:8px;
+}
+.pura-slot.sel{ border-color:rgba(255,255,255,0.85); background:rgba(255,255,255,0.2); }
+.pura-slot-row{ display:flex; align-items:center; gap:8px; }
+.pura-body .pura-use{
+    flex:0 0 auto;
+    width:auto;
+    padding:6px 10px;
+    background:rgba(255,255,255,0.18);
+    color:white;
+    border:1px solid rgba(255,255,255,0.3);
+    border-radius:999px;
+    font-size:12px;
+    cursor:pointer;
+}
+.pura-slot.sel .pura-use{ background:white; color:#444; border-color:white; font-weight:700; }
+.pura-body input.pura-name{
+    flex:1;
+    min-width:0;
+    width:auto;
+    padding:6px 8px;
+    background:transparent;
+    color:white;
+    border:1px solid transparent;
+    border-radius:8px;
+    font-size:14px;
+    font-weight:600;
+}
+.pura-body input.pura-name:hover,
+.pura-body input.pura-name:focus{ border-color:rgba(255,255,255,0.4); background:rgba(255,255,255,0.1); }
+.pura-life{ height:6px; border-radius:3px; background:rgba(255,255,255,0.2); margin:8px 0 4px; overflow:hidden; }
+.pura-life > div{ height:100%; background:#8bc34a; transition:width .4s; }
+.pura-life > div.low{ background:#ffb74d; }
+.pura-life > div.empty{ background:#ef5350; }
+.pura-life-row{ display:flex; justify-content:space-between; align-items:center; font-size:12px; opacity:0.9; }
+.pura-body .pura-link{
+    background:none;
+    border:none;
+    color:white;
+    text-decoration:underline;
+    padding:0;
+    font-size:12px;
+    cursor:pointer;
+}
+.pura-swatches{ display:flex; gap:8px; align-items:center; flex-wrap:wrap; }
+.pura-body .pura-sw{
+    width:26px; height:26px; padding:0;
+    border-radius:50%;
+    border:2px solid rgba(255,255,255,0.35);
+    cursor:pointer;
+}
+.pura-body .pura-sw[aria-pressed="true"]{ border-color:white; box-shadow:0 0 0 2px rgba(0,0,0,0.35); }
+.pura-times{ display:flex; gap:10px; align-items:center; flex-wrap:wrap; margin-top:8px; font-size:13px; }
+.pura-body input[type="time"]{
+    width:auto;
+    padding:6px 8px;
+    border:1px solid rgba(255,255,255,0.3);
+    border-radius:8px;
+    background:rgba(255,255,255,0.15);
+    color:white;
+    color-scheme:dark;
+}
+.pura-conn summary{ cursor:pointer; font-size:13px; opacity:0.9; padding:4px 0; }
+.pura-conn label{ display:block; font-size:12px; margin-top:8px; opacity:0.9; }
+.pura-body input.pura-field,
+.pura-body select.pura-field{
+    width:100%;
+    margin-top:3px;
+    padding:7px 9px;
+    border:1px solid rgba(255,255,255,0.3);
+    border-radius:8px;
+    background:rgba(255,255,255,0.15);
+    color:white;
+    font-size:13px;
+}
+.pura-body input.pura-field::placeholder{ color:rgba(255,255,255,0.55); }
+.pura-body select.pura-field{ margin-top:8px; }
+.pura-body select.pura-field option{ color:#222; }
+.pura-live{ font-size:13px; background:rgba(255,255,255,0.1); border-radius:10px; padding:6px 10px; }
+.pura-live-row{ display:flex; justify-content:space-between; gap:10px; padding:4px 0; border-bottom:1px solid rgba(255,255,255,0.12); }
+.pura-live-row:last-child{ border-bottom:none; }
+.pura-live-val{ font-weight:700; text-align:right; }
+.pura-conn-btns{ display:flex; gap:8px; margin-top:10px; }
+.pura-body .pura-conn-btns button{
+    flex:1;
+    padding:8px 10px;
+    background:white;
+    color:#444;
+    border:none;
+    border-radius:10px;
+    font-size:13px;
+    cursor:pointer;
+}
+.pura-body .pura-conn-btns button.alt{ background:rgba(255,255,255,0.18); color:white; border:1px solid rgba(255,255,255,0.3); }
+#puraConnMsg{ font-size:12px; margin-top:8px; min-height:0; }
+#puraConnMsg:empty{ display:none; }
+#puraConnMsg.bad{ color:#ffb4b4; }
+#puraConnMsg.good{ color:#a5e6a5; }
+body.dark-mode .pura-body .pura-conn-btns button{ background:white; color:#444; }
+body.dark-mode .pura-body .pura-conn-btns button.alt{ background:rgba(255,255,255,0.18); color:white; }
+.pura-note{ font-size:12px; opacity:0.75; margin-top:12px; }
+body.dark-mode .pura-body .pura-seg button,
+body.dark-mode .pura-body .pura-use,
+body.dark-mode .pura-body .pura-sw{ background:rgba(255,255,255,0.15); color:white; }
+body.dark-mode .pura-body .pura-seg button.sel,
+body.dark-mode .pura-body .pura-seg button[aria-pressed="true"],
+body.dark-mode .pura-body .pura-slot.sel .pura-use{ background:white; color:#444; }
+body.dark-mode .pura-body .pura-link{ background:none; color:white; }
+body.dark-mode .pura-body .pura-switch{ background:rgba(255,255,255,0.3); }
+body.dark-mode .pura-body .pura-switch[aria-checked="true"]{ background:#4caf50; }
 </style>
 </head>
 <body>
@@ -945,44 +1136,6 @@ li{
                 <div id="weather-humidity">Humidity: --%</div>
                 <div id="weather-wind">Wind: -- mph</div>
             </div>
-        </div>
-    </div>
-</div>
-
-<!-- THERMOSTAT (ecobee via Home Assistant) -->
-<div class="widget" id="thermoWidget" data-h="580">
-    <div class="widget-inner">
-        <div class="widget-header" tabindex="0" aria-label="THERMOSTAT. Drag to move, or use the arrow keys.">
-            <span class="title">🌡️ THERMOSTAT</span>
-        </div>
-        <div class="widget-body th-body">
-            <div class="th-top">
-                <div class="th-status"><span class="th-dot" id="thDot"></span><span id="thStatus">Starting…</span></div>
-                <button class="th-gear" id="thGear" title="Connect to Home Assistant" aria-label="Thermostat settings">⚙️</button>
-            </div>
-            <div class="th-err" id="thErr"></div>
-            <div class="th-name" id="thName">Thermostat</div>
-            <div class="th-sub" id="thSub"></div>
-            <div class="th-dial">
-                <svg viewBox="0 0 220 200" id="thDialSvg" aria-hidden="true"></svg>
-                <div class="th-center">
-                    <div class="th-action" id="thAction"></div>
-                    <div class="th-target" id="thTarget">--</div>
-                    <div class="th-sub" id="thCurrent"></div>
-                </div>
-            </div>
-            <div class="th-steppers" id="thSteppers"></div>
-            <div class="th-seg" id="thModes"></div>
-            <div class="th-chips" id="thPresets"></div>
-
-            <div class="th-light hidden" id="thLightSec">
-                <div class="th-light-row">
-                    <div><div class="th-name" id="thLName" style="margin-top:0">Light</div><div class="th-sub" id="thLSub"></div></div>
-                    <button class="th-switch" id="thLSwitch" aria-label="Toggle light"></button>
-                </div>
-                <input type="range" id="thLBright" min="1" max="100" value="100" aria-label="Brightness">
-            </div>
-            <div class="th-footer" id="thUpdated"></div>
         </div>
     </div>
 </div>
@@ -1108,6 +1261,124 @@ li{
             </div>
             <button id="musicClear">🗑 Clear Playlist</button>
             <div id="musicPlaylist"></div>
+        </div>
+    </div>
+</div>
+<!-- THERMOSTAT (ecobee via Home Assistant) -->
+<div class="widget" id="thermoWidget" data-h="580">
+    <div class="widget-inner">
+        <div class="widget-header" tabindex="0" aria-label="THERMOSTAT. Drag to move, or use the arrow keys.">
+            <span class="title">🌡️ THERMOSTAT</span>
+        </div>
+        <div class="widget-body th-body">
+            <div class="th-top">
+                <div class="th-status"><span class="th-dot" id="thDot"></span><span id="thStatus">Starting…</span></div>
+                <button class="th-gear" id="thGear" title="Connect to Home Assistant" aria-label="Thermostat settings">⚙️</button>
+            </div>
+            <div class="th-err" id="thErr"></div>
+            <div class="th-name" id="thName">Thermostat</div>
+            <div class="th-sub" id="thSub"></div>
+            <div class="th-dial">
+                <svg viewBox="0 0 220 200" id="thDialSvg" aria-hidden="true"></svg>
+                <div class="th-center">
+                    <div class="th-action" id="thAction"></div>
+                    <div class="th-target" id="thTarget">--</div>
+                    <div class="th-sub" id="thCurrent"></div>
+                </div>
+            </div>
+            <div class="th-steppers" id="thSteppers"></div>
+            <div class="th-seg" id="thModes"></div>
+            <div class="th-chips" id="thPresets"></div>
+
+            <div class="th-light hidden" id="thLightSec">
+                <div class="th-light-row">
+                    <div><div class="th-name" id="thLName" style="margin-top:0">Light</div><div class="th-sub" id="thLSub"></div></div>
+                    <button class="th-switch" id="thLSwitch" aria-label="Toggle light"></button>
+                </div>
+                <input type="range" id="thLBright" min="1" max="100" value="100" aria-label="Brightness">
+            </div>
+            <div class="th-footer" id="thUpdated"></div>
+        </div>
+    </div>
+</div>
+
+
+<!-- PURA DIFFUSER -->
+<div class="widget" id="puraWidget" data-h="640">
+    <div class="widget-inner">
+        <div class="widget-header" tabindex="0" aria-label="PURA DIFFUSER. Drag to move, or use the arrow keys.">
+            <span class="title">🌸 PURA DIFFUSER</span>
+        </div>
+        <div class="widget-body pura-body">
+
+            <div class="pura-sec" style="margin-top:0;margin-bottom:14px">
+                <div class="pura-label">Live connection <span id="puraConnState">Not connected</span></div>
+                <details class="pura-conn" id="puraConn">
+                    <summary>Connect your Pura through Home Assistant</summary>
+                    <label>Home Assistant address, blank if this page is hosted in Home Assistant
+                        <input class="pura-field" id="puraUrl" type="text" placeholder="http://homeassistant.local:8123" autocomplete="off" spellcheck="false">
+                    </label>
+                    <label>Long-lived access token
+                        <input class="pura-field" id="puraToken" type="password" placeholder="Paste your token" autocomplete="off">
+                    </label>
+                    <label>Diffuser, found for you after you connect
+                        <input class="pura-field" id="puraDevice" type="text" placeholder="Filled in automatically" autocomplete="off" spellcheck="false">
+                    </label>
+                    <select class="pura-field" id="puraDevSelect" style="display:none" aria-label="Choose your diffuser"></select>
+                    <label>On and off entity, optional
+                        <input class="pura-field" id="puraPowerEntity" list="puraEntities" type="text" placeholder="Pick from your diffuser's entities" autocomplete="off" spellcheck="false">
+                        <datalist id="puraEntities"></datalist>
+                    </label>
+                    <div class="pura-conn-btns">
+                        <button id="puraConnSave" type="button">Connect</button>
+                        <button id="puraConnClear" type="button" class="alt">Disconnect</button>
+                    </div>
+                    <div id="puraConnMsg" role="status"></div>
+                    <div class="pura-label" style="margin-top:12px">Live from your diffuser <span id="puraLiveTime"></span></div>
+                    <div class="pura-live" id="puraLive">Connect to see live status.</div>
+                </details>
+            </div>
+
+            <div class="pura-top">
+                <div>
+                    <div class="pura-status"><span class="pura-orb" id="puraOrb"></span><span id="puraState">Off</span></div>
+                    <div class="pura-status-sub" id="puraSub">Tap the switch to start diffusing</div>
+                </div>
+                <button id="puraPower" class="pura-switch" type="button" role="switch" aria-checked="false" aria-label="Diffuser power"></button>
+            </div>
+
+            <div class="pura-sec">
+                <div class="pura-label">Intensity <span id="puraLevelName">Medium</span></div>
+                <div class="pura-seg" id="puraLevels" role="group" aria-label="Intensity"></div>
+            </div>
+
+            <div class="pura-sec">
+                <div class="pura-label">Fragrances <span>2 vials</span></div>
+                <div id="puraSlots"></div>
+            </div>
+
+            <div class="pura-sec">
+                <div class="pura-label">Timer <span id="puraTimerLeft"></span></div>
+                <div class="pura-seg" id="puraTimers" role="group" aria-label="Auto-off timer"></div>
+            </div>
+
+            <div class="pura-sec">
+                <div class="pura-label">Nightlight <span id="puraLightState">Off</span></div>
+                <div class="pura-swatches" id="puraSwatches" role="group" aria-label="Nightlight color"></div>
+            </div>
+
+            <div class="pura-sec">
+                <div class="pura-label">Schedule
+                    <button id="puraSchedOn" class="pura-switch" type="button" role="switch" aria-checked="false" aria-label="Schedule on" style="width:44px;height:26px"></button>
+                </div>
+                <div class="pura-seg" id="puraDays" role="group" aria-label="Days"></div>
+                <div class="pura-times">
+                    <label>On <input type="time" id="puraStart" value="08:00"></label>
+                    <label>Off <input type="time" id="puraEnd" value="20:00"></label>
+                </div>
+            </div>
+
+            <div class="pura-note">Settings are saved in this browser. Until you connect above, the controls only change this widget.</div>
         </div>
     </div>
 </div>
@@ -2969,6 +3240,452 @@ pomoRender();
     });
 
     load();
+})();
+</script>
+
+
+<script>
+/* PURA DIFFUSER WIDGET */
+(function(){
+    var KEY = "ha-pura-v1";
+    var VIAL_HOURS = 120;
+    var HOUR = 3600000;
+    var LEVELS = ["Subtle", "Light", "Medium", "Strong", "Max"];
+    var USE_RATE = [0.6, 0.8, 1, 1.3, 1.6];
+    var COLORS = ["#ffffff", "#ffb86b", "#ff7eb6", "#7ec8ff", "#9dff9a", "#c39bff"];
+    var COLOR_NAMES = ["White", "Amber", "Pink", "Blue", "Green", "Purple"];
+    var TIMERS = [{l:"Off", m:0}, {l:"30m", m:30}, {l:"1h", m:60}, {l:"2h", m:120}, {l:"4h", m:240}];
+    var DAYS = ["S", "M", "T", "W", "T", "F", "S"];
+    var DAY_NAMES = ["Sunday", "Monday", "Tuesday", "Wednesday", "Thursday", "Friday", "Saturday"];
+
+    var S = {
+        on: false, level: 3, active: 0,
+        slots: [{name: "Linens & Surf", used: 0}, {name: "Pacific Aqua", used: 0}],
+        light: false, color: 1, timerEnd: 0, timerMin: 0,
+        sched: {on: false, start: "08:00", end: "20:00", days: [0,1,1,1,1,1,0]}
+    };
+
+    function load(){
+        try {
+            var d = JSON.parse(localStorage.getItem(KEY));
+            if (!d) return;
+            if (typeof d.on === "boolean") S.on = d.on;
+            if (d.level >= 1 && d.level <= 5) S.level = d.level | 0;
+            if (d.active === 0 || d.active === 1) S.active = d.active;
+            if (Array.isArray(d.slots)) d.slots.slice(0, 2).forEach(function(s, i){
+                if (s && typeof s.name === "string") S.slots[i].name = s.name.slice(0, 24);
+                if (s && isFinite(s.used) && s.used >= 0) S.slots[i].used = +s.used;
+            });
+            if (typeof d.light === "boolean") S.light = d.light;
+            if (d.color >= 0 && d.color < COLORS.length) S.color = d.color | 0;
+            if (isFinite(d.timerEnd) && d.timerEnd > Date.now()){ S.timerEnd = +d.timerEnd; S.timerMin = d.timerMin | 0; }
+            if (d.sched){
+                S.sched.on = !!d.sched.on;
+                if (/^\d\d:\d\d$/.test(d.sched.start)) S.sched.start = d.sched.start;
+                if (/^\d\d:\d\d$/.test(d.sched.end)) S.sched.end = d.sched.end;
+                if (Array.isArray(d.sched.days) && d.sched.days.length === 7) S.sched.days = d.sched.days.map(function(x){ return x ? 1 : 0; });
+            }
+            if (S.on === false) S.timerEnd = 0;
+        } catch(e){}
+    }
+    function save(){ try { localStorage.setItem(KEY, JSON.stringify(S)); } catch(e){} }
+
+    var $ = function(id){ return document.getElementById(id); };
+    var els = {
+        orb: $("puraOrb"), state: $("puraState"), sub: $("puraSub"), power: $("puraPower"),
+        levels: $("puraLevels"), levelName: $("puraLevelName"), slots: $("puraSlots"),
+        timers: $("puraTimers"), timerLeft: $("puraTimerLeft"),
+        swatches: $("puraSwatches"), lightState: $("puraLightState"),
+        schedOn: $("puraSchedOn"), days: $("puraDays"), start: $("puraStart"), end: $("puraEnd")
+    };
+
+    function setPress(btn, on){ btn.setAttribute("aria-pressed", on ? "true" : "false"); }
+
+    function lifePct(slot){ return Math.max(0, 100 - slot.used / (VIAL_HOURS * HOUR) * 100); }
+    function lifeHours(slot){ return Math.max(0, VIAL_HOURS - slot.used / HOUR); }
+
+    /* ---------- build the static controls ---------- */
+    LEVELS.forEach(function(name, i){
+        var b = document.createElement("button");
+        b.type = "button"; b.textContent = i + 1;
+        b.setAttribute("aria-label", "Intensity " + (i + 1) + ", " + name);
+        b.addEventListener("click", function(){ S.level = i + 1; save(); render(); if (S.on) syncDevice(); });
+        els.levels.appendChild(b);
+    });
+
+    TIMERS.forEach(function(t){
+        var b = document.createElement("button");
+        b.type = "button"; b.textContent = t.l;
+        b.addEventListener("click", function(){
+            if (!t.m){ S.timerEnd = 0; S.timerMin = 0; }
+            else {
+                S.timerEnd = Date.now() + t.m * 60000; S.timerMin = t.m;
+                if (!S.on) S.on = true;
+            }
+            save(); render();
+            if (t.m) syncDevice();
+        });
+        els.timers.appendChild(b);
+    });
+
+    var offSw = document.createElement("button");
+    offSw.type = "button"; offSw.className = "pura-sw"; offSw.style.background = "transparent";
+    offSw.setAttribute("aria-label", "Nightlight off"); offSw.textContent = "✕"; offSw.style.fontSize = "12px"; offSw.style.color = "white";
+    offSw.addEventListener("click", function(){ S.light = false; save(); render(); });
+    els.swatches.appendChild(offSw);
+    COLORS.forEach(function(c, i){
+        var b = document.createElement("button");
+        b.type = "button"; b.className = "pura-sw"; b.style.background = c;
+        b.setAttribute("aria-label", "Nightlight " + COLOR_NAMES[i]);
+        b.addEventListener("click", function(){ S.light = true; S.color = i; save(); render(); });
+        els.swatches.appendChild(b);
+    });
+
+    DAYS.forEach(function(d, i){
+        var b = document.createElement("button");
+        b.type = "button"; b.textContent = d;
+        b.setAttribute("aria-label", DAY_NAMES[i]);
+        b.addEventListener("click", function(){ S.sched.days[i] = S.sched.days[i] ? 0 : 1; save(); render(); });
+        els.days.appendChild(b);
+    });
+
+    var slotEls = [];
+    [0, 1].forEach(function(i){
+        var box = document.createElement("div");
+        box.className = "pura-slot";
+        box.innerHTML =
+            '<div class="pura-slot-row">' +
+              '<input class="pura-name" type="text" maxlength="24" aria-label="Fragrance ' + (i + 1) + ' name">' +
+              '<button class="pura-use" type="button"></button>' +
+            '</div>' +
+            '<div class="pura-life"><div></div></div>' +
+            '<div class="pura-life-row"><span class="pura-left"></span>' +
+              '<button class="pura-link" type="button">Replace vial</button></div>';
+        var nameIn = box.querySelector(".pura-name");
+        nameIn.addEventListener("input", function(){ S.slots[i].name = nameIn.value.slice(0, 24); save(); renderStatus(); });
+        box.querySelector(".pura-use").addEventListener("click", function(){ S.active = i; save(); render(); if (S.on) syncDevice(); });
+        box.querySelector(".pura-link").addEventListener("click", function(){ S.slots[i].used = 0; save(); render(); });
+        els.slots.appendChild(box);
+        slotEls.push({
+            box: box, name: nameIn,
+            use: box.querySelector(".pura-use"),
+            fill: box.querySelector(".pura-life > div"),
+            left: box.querySelector(".pura-left")
+        });
+    });
+
+    /* ---------- render ---------- */
+    function activeName(){ return S.slots[S.active].name || ("Fragrance " + (S.active + 1)); }
+
+    function renderStatus(){
+        els.orb.classList.toggle("on", S.on);
+        els.state.textContent = S.on ? "Diffusing" : "Off";
+        els.sub.textContent = S.on
+            ? LEVELS[S.level - 1] + " · " + activeName()
+            : "Tap the switch to start diffusing";
+        els.power.setAttribute("aria-checked", S.on ? "true" : "false");
+    }
+
+    function renderLife(){
+        slotEls.forEach(function(se, i){
+            var p = lifePct(S.slots[i]);
+            se.fill.style.width = p + "%";
+            se.fill.className = p <= 0 ? "empty" : p < 15 ? "low" : "";
+            se.left.textContent = p <= 0
+                ? "Vial empty"
+                : Math.round(p) + "% · about " + Math.round(lifeHours(S.slots[i])) + " h left";
+        });
+    }
+
+    function renderTimer(){
+        if (S.timerEnd > Date.now()){
+            var s = Math.ceil((S.timerEnd - Date.now()) / 1000);
+            var h = Math.floor(s / 3600), m = Math.floor((s % 3600) / 60), r = s % 60;
+            els.timerLeft.textContent = "Off in " + (h ? h + ":" + String(m).padStart(2, "0") : m) + ":" + String(r).padStart(2, "0");
+        } else {
+            els.timerLeft.textContent = "";
+        }
+        Array.prototype.forEach.call(els.timers.children, function(b, i){
+            var t = TIMERS[i];
+            setPress(b, t.m ? (S.timerEnd > Date.now() && S.timerMin === t.m) : !(S.timerEnd > Date.now()));
+        });
+    }
+
+    function render(){
+        renderStatus();
+        els.levelName.textContent = LEVELS[S.level - 1];
+        Array.prototype.forEach.call(els.levels.children, function(b, i){ setPress(b, S.level === i + 1); });
+        slotEls.forEach(function(se, i){
+            se.box.classList.toggle("sel", S.active === i);
+            if (document.activeElement !== se.name) se.name.value = S.slots[i].name;
+            se.use.textContent = S.active === i ? "In use" : "Use";
+            se.use.setAttribute("aria-pressed", S.active === i ? "true" : "false");
+        });
+        renderLife();
+        renderTimer();
+        els.lightState.textContent = S.light ? COLOR_NAMES[S.color] : "Off";
+        Array.prototype.forEach.call(els.swatches.children, function(b, i){
+            setPress(b, i === 0 ? !S.light : (S.light && S.color === i - 1));
+        });
+        els.schedOn.setAttribute("aria-checked", S.sched.on ? "true" : "false");
+        Array.prototype.forEach.call(els.days.children, function(b, i){ setPress(b, !!S.sched.days[i]); });
+        els.start.value = S.sched.start;
+        els.end.value = S.sched.end;
+    }
+
+    /* ---------- actions ---------- */
+    function setPower(on){
+        S.on = on;
+        if (!on) S.timerEnd = 0;
+        save(); render();
+        syncDevice();
+    }
+    els.power.addEventListener("click", function(){ setPower(!S.on); });
+    els.schedOn.addEventListener("click", function(){ S.sched.on = !S.sched.on; save(); render(); });
+    els.start.addEventListener("change", function(){ if (els.start.value){ S.sched.start = els.start.value; save(); } });
+    els.end.addEventListener("change", function(){ if (els.end.value){ S.sched.end = els.end.value; save(); } });
+
+    /* ---------- clock: vial use, timer, schedule ---------- */
+    var last = Date.now(), lastSave = last, firedKey = "";
+    function pad(n){ return String(n).padStart(2, "0"); }
+
+    setInterval(function(){
+        var now = Date.now(), dt = now - last;
+        last = now;
+        if (dt > 60000) dt = 0;
+
+        if (S.on){
+            S.slots[S.active].used += dt * USE_RATE[S.level - 1];
+            renderLife();
+        }
+        if (S.timerEnd){
+            if (now >= S.timerEnd){ S.timerEnd = 0; S.timerMin = 0; S.on = false; save(); render(); }
+            else renderTimer();
+        }
+
+        var d = new Date();
+        var hm = pad(d.getHours()) + ":" + pad(d.getMinutes());
+        if (S.sched.on && S.sched.days[d.getDay()]){
+            var key = d.toDateString() + hm;
+            if (key !== firedKey){
+                if (hm === S.sched.start){ firedKey = key; if (!S.on) setPower(true); }
+                else if (hm === S.sched.end){ firedKey = key; if (S.on) setPower(false); }
+            }
+        }
+
+        if (now - lastSave > 10000){ lastSave = now; save(); }
+    }, 1000);
+
+    window.addEventListener("beforeunload", save);
+
+    /* ---------- Home Assistant connection ---------- */
+    var CKEY = "ha-pura-conn-v1";
+    var DEFAULT_MIN = 60;
+    var C = {url: "", token: "", device: "", power: ""};
+    var connEls = {
+        state: $("puraConnState"), url: $("puraUrl"), token: $("puraToken"),
+        device: $("puraDevice"), power: $("puraPowerEntity"),
+        save: $("puraConnSave"), clear: $("puraConnClear"), msg: $("puraConnMsg")
+    };
+
+    function loadConn(){
+        try {
+            var d = JSON.parse(localStorage.getItem(CKEY));
+            if (d) ["url", "token", "device", "power"].forEach(function(k){ if (typeof d[k] === "string") C[k] = d[k]; });
+        } catch(e){}
+        connEls.url.value = C.url; connEls.token.value = C.token;
+        connEls.device.value = C.device; connEls.power.value = C.power;
+    }
+    function saveConn(){ try { localStorage.setItem(CKEY, JSON.stringify(C)); } catch(e){} }
+    function isLinked(){ return !!(C.token && C.device); }
+
+    function connMsg(text, kind){
+        connEls.msg.textContent = text || "";
+        connEls.msg.className = kind || "";
+    }
+    function connState(text){ connEls.state.textContent = text; }
+
+    function haFetch(path, opts){
+        opts = opts || {};
+        opts.headers = {"Authorization": "Bearer " + C.token, "Content-Type": "application/json"};
+        return fetch(C.url.replace(/\/+$/, "") + path, opts).then(function(r){
+            if (!r.ok) throw new Error("Home Assistant answered " + r.status + (r.status === 401 ? " (token rejected)" : ""));
+            return r;
+        });
+    }
+    function haError(e){
+        var m = String(e && e.message || e);
+        if (/Failed to fetch|NetworkError|Load failed/i.test(m))
+            m = "Couldn't reach Home Assistant. Check the address, and see the guide for the CORS and https notes.";
+        connMsg(m, "bad");
+        connState("Error");
+    }
+    function callService(domain, service, data){
+        return haFetch("/api/services/" + domain + "/" + service, {method: "POST", body: JSON.stringify(data)});
+    }
+
+    function syncDevice(){
+        if (!isLinked()) return;
+        if (S.on){
+            if (!(S.timerEnd > Date.now())){
+                S.timerEnd = Date.now() + DEFAULT_MIN * 60000;
+                S.timerMin = DEFAULT_MIN;
+                save(); render();
+            }
+            var mins = Math.max(1, Math.round((S.timerEnd - Date.now()) / 60000));
+            callService("pura", "start_timer", {
+                device_id: C.device,
+                slot: String(S.active + 1),
+                intensity: S.level * 2,
+                duration: {hours: Math.floor(mins / 60), minutes: mins % 60, seconds: 0}
+            }).then(function(){
+                connState("Connected");
+                connMsg("Sent to the diffuser: slot " + (S.active + 1) + ", intensity " + (S.level * 2) + ", " + mins + " min.", "good");
+            }).catch(haError);
+        } else if (C.power){
+            callService("homeassistant", "turn_off", {entity_id: C.power}).then(function(){
+                connState("Connected");
+                connMsg("Turn-off sent.", "good");
+            }).catch(haError);
+        } else {
+            connMsg("The widget is off, but no off entity is set, so the diffuser runs until its own timer ends.", "bad");
+        }
+    }
+
+    connEls.sel = $("puraDevSelect");
+    connEls.live = $("puraLive");
+    connEls.liveTime = $("puraLiveTime");
+    connEls.ents = $("puraEntities");
+    var liveIds = [], liveTimer = null;
+
+    function tpl(t){
+        return haFetch("/api/template", {method: "POST", body: JSON.stringify({template: t})}).then(function(r){ return r.text(); });
+    }
+
+    function stopLive(){
+        if (liveTimer){ clearInterval(liveTimer); liveTimer = null; }
+        liveIds = [];
+        connEls.live.textContent = "Connect to see live status.";
+        connEls.liveTime.textContent = "";
+        connEls.ents.innerHTML = "";
+    }
+
+    function renderLive(list){
+        connEls.live.innerHTML = "";
+        if (!list.length){ connEls.live.textContent = "No entities found for this device."; return; }
+        list.forEach(function(st){
+            var row = document.createElement("div");
+            row.className = "pura-live-row";
+            var n = document.createElement("span");
+            n.textContent = (st.attributes && st.attributes.friendly_name) || st.entity_id;
+            var v = document.createElement("span");
+            v.className = "pura-live-val";
+            v.textContent = st.state + ((st.attributes && st.attributes.unit_of_measurement) ? " " + st.attributes.unit_of_measurement : "");
+            row.appendChild(n);
+            row.appendChild(v);
+            connEls.live.appendChild(row);
+        });
+        var d = new Date();
+        connEls.liveTime.textContent = "Updated " + pad(d.getHours()) + ":" + pad(d.getMinutes()) + ":" + pad(d.getSeconds());
+    }
+
+    function pollLive(){
+        return haFetch("/api/states").then(function(r){ return r.json(); }).then(function(all){
+            var want = {};
+            liveIds.forEach(function(id){ want[id] = 1; });
+            renderLive(all.filter(function(st){ return want[st.entity_id]; }));
+            connState("Connected");
+        }).catch(haError);
+    }
+
+    function startLive(){
+        stopLive();
+        if (!/^[A-Za-z0-9_-]+$/.test(C.device)){
+            connMsg("That diffuser ID doesn't look right. Clear it and press Connect to find it again.", "bad");
+            return;
+        }
+        tpl("{{ device_entities('" + C.device + "') | tojson }}").then(function(txt){
+            liveIds = JSON.parse(txt);
+            liveIds.forEach(function(id){
+                var o = document.createElement("option");
+                o.value = id;
+                connEls.ents.appendChild(o);
+            });
+            if (liveIds.length) connMsg("Live status is on and refreshes every 10 seconds. Pick the on and off entity above if one is listed.", "good");
+            else connMsg("Connected, but this device has no entities yet.", "bad");
+            pollLive();
+            liveTimer = setInterval(pollLive, 10000);
+        }).catch(haError);
+    }
+
+    function chooseDevice(id, name){
+        C.device = id;
+        connEls.device.value = id;
+        saveConn();
+        connEls.sel.style.display = "none";
+        connMsg("Found " + (name || "your diffuser") + ". Loading live status…");
+        startLive();
+    }
+
+    function findDevices(){
+        connMsg("Looking for your Pura diffusers…");
+        var t = "{% set ns = namespace(out=[]) %}{% for d in integration_entities('pura') | map('device_id') | unique | reject('none') %}{% set ns.out = ns.out + [{'id': d, 'name': device_attr(d, 'name')}] %}{% endfor %}{{ ns.out | tojson }}";
+        tpl(t).then(function(txt){
+            var list = JSON.parse(txt);
+            if (!list.length){
+                connMsg("Connected, but no Pura diffusers were found. Check that the Pura integration is set up in Home Assistant.", "bad");
+                return;
+            }
+            if (list.length === 1){ chooseDevice(list[0].id, list[0].name); return; }
+            connEls.sel.innerHTML = "";
+            var ph = document.createElement("option");
+            ph.value = ""; ph.textContent = "Choose your diffuser";
+            connEls.sel.appendChild(ph);
+            list.forEach(function(d){
+                var o = document.createElement("option");
+                o.value = d.id; o.textContent = d.name || d.id;
+                connEls.sel.appendChild(o);
+            });
+            connEls.sel.style.display = "block";
+            connMsg("Found " + list.length + " diffusers. Choose one.", "good");
+        }).catch(haError);
+    }
+
+    connEls.sel.addEventListener("change", function(){
+        if (connEls.sel.value) chooseDevice(connEls.sel.value, connEls.sel.options[connEls.sel.selectedIndex].textContent);
+    });
+    connEls.power.addEventListener("change", function(){ C.power = connEls.power.value.trim(); saveConn(); });
+
+    connEls.save.addEventListener("click", function(){
+        C.url = connEls.url.value.trim();
+        C.token = connEls.token.value.trim();
+        C.device = connEls.device.value.trim();
+        C.power = connEls.power.value.trim();
+        if (!C.token){ connMsg("Paste your long-lived access token first.", "bad"); return; }
+        saveConn();
+        stopLive();
+        connMsg("Connecting…");
+        haFetch("/api/").then(function(){
+            connState("Connected");
+            if (C.device) startLive(); else findDevices();
+        }).catch(haError);
+    });
+
+    connEls.clear.addEventListener("click", function(){
+        stopLive();
+        C = {url: "", token: "", device: "", power: ""};
+        try { localStorage.removeItem(CKEY); } catch(e){}
+        connEls.url.value = ""; connEls.token.value = ""; connEls.device.value = ""; connEls.power.value = "";
+        connEls.sel.style.display = "none";
+        connState("Not connected");
+        connMsg("");
+    });
+
+    load();
+    loadConn();
+    if (!C.token) $("puraConn").open = true;
+    render();
+    if (C.token && C.device){ connState("Connecting…"); startLive(); }
 })();
 </script>
 
