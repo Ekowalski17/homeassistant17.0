@@ -856,7 +856,6 @@ li{
 #cookWidget .ck-card.done{ border-color:#f87171; animation:ckFlash 1s ease-in-out infinite; }
 #cookWidget .ck-card.done .ck-fill{ background:#f87171; }
 @keyframes ckFlash{ 50%{ background:rgba(248,113,113,0.35); } }
-/* lions STATS */
 #lionsWidget button.on{ background:white; color:#333; border-color:white; font-weight:700; }
 #lionsWidget .li-team{ display:flex; align-items:center; justify-content:center; gap:12px; text-align:left; }
 #lionsWidget .li-logo{ width:58px; height:58px; }
@@ -1067,6 +1066,24 @@ li{
     </div>
 </div>
 
+<!-- LPGA LIVE LEADERBOARD -->
+<div class="widget" id="lpgaWidget" data-h="440">
+    <div class="widget-inner">
+        <div class="widget-header" tabindex="0" aria-label="LPGA LIVE LEADERBOARD. Drag to move, or use the arrow keys.">
+            <span class="title">🏌️ LPGA Live Leaderboard</span>
+        </div>
+        <div class="widget-body speed-widget">
+            <div id="tournamentName" class="tournament">
+                Loading Tournament...
+            </div>
+            <div id="leaderboard">
+                <div class="loading">Loading leaderboard...</div>
+            </div>
+            <div id="updatedTime" class="timestamp"></div>
+        </div>
+    </div>
+</div>
+
 <!-- MUSIC PLAYER -->
 <div class="widget" id="musicWidget" data-h="520">
     <div class="widget-inner">
@@ -1095,47 +1112,11 @@ li{
     </div>
 </div>
 
-<!-- TIMER -->
-<div class="widget" id="timerWidget" data-h="420">
-    <div class="widget-inner">
-        <div class="widget-header" tabindex="0" aria-label="TIMER. Drag to move, or use the arrow keys.">
-            <span class="title">⏱️ TIMER</span>
-        </div>
-        <div class="widget-body speed-widget tm-body">
-            <div class="tm-presets">
-                <button data-min="1">1 min</button>
-                <button data-min="5">5 min</button>
-                <button data-min="10">10 min</button>
-                <button data-min="15">15 min</button>
-            </div>
-            <div class="tm-ring">
-                <svg viewBox="0 0 120 120" aria-hidden="true">
-                    <circle class="tm-track" cx="60" cy="60" r="52"></circle>
-                    <circle class="tm-progress" id="tmProgress" cx="60" cy="60" r="52"></circle>
-                </svg>
-                <div class="tm-center">
-                    <div id="tmTime" role="timer">05:00</div>
-                    <div id="tmLabel">Ready</div>
-                </div>
-            </div>
-            <div class="tm-custom">
-                <input type="number" id="tmMin" min="0" max="999" value="5" aria-label="Minutes"> min
-                <input type="number" id="tmSec" min="0" max="59" value="0" aria-label="Seconds"> sec
-                <button id="tmSet">SET</button>
-            </div>
-            <div class="tm-controls">
-                <button id="tmStart">START</button>
-                <button id="tmReset">RESET</button>
-            </div>
-        </div>
-    </div>
-</div>
-
 <!-- COOKING TIMERS -->
-<div class="widget" id="cookWidget" data-h="480">
+<div class="widget" id="cookWidget" data-h="200">
     <div class="widget-inner">
         <div class="widget-header" tabindex="0" aria-label="COOKING TIMERS. Drag to move, or use the arrow keys.">
-            <span class="title">🍳 COOKING TIMERS</span>
+            <span class="title">TIMER</span>
         </div>
         <div class="widget-body speed-widget ck-body">
             <div class="ck-add">
@@ -1152,7 +1133,6 @@ li{
         </div>
     </div>
 </div>
-
 
 <!-- LIONS STATS -->
 <div class="widget" id="lionsWidget" data-h="560">
@@ -1176,55 +1156,6 @@ li{
             </div>
             <div class="li-leaders" id="liLeaders"></div>
             <div class="li-updated" id="liUpdated"></div>
-        </div>
-    </div>
-</div>
-<!-- LPGA LIVE LEADERBOARD -->
-<div class="widget" id="lpgaWidget" data-h="440">
-    <div class="widget-inner">
-        <div class="widget-header" tabindex="0" aria-label="LPGA LIVE LEADERBOARD. Drag to move, or use the arrow keys.">
-            <span class="title">🏌️ LPGA Live Leaderboard</span>
-        </div>
-        <div class="widget-body speed-widget">
-            <div id="tournamentName" class="tournament">
-                Loading Tournament...
-            </div>
-            <div id="leaderboard">
-                <div class="loading">Loading leaderboard...</div>
-            </div>
-            <div id="updatedTime" class="timestamp"></div>
-        </div>
-    </div>
-</div>
-
-<!-- POMODORO TIMER -->
-<div class="widget" id="pomodoroWidget" data-h="400">
-    <div class="widget-inner">
-        <div class="widget-header" tabindex="0" aria-label="POMODORO TIMER. Drag to move, or use the arrow keys.">
-            <span class="title">🍅 POMODORO TIMER</span>
-        </div>
-        <div class="widget-body speed-widget pomo-body">
-            <div class="pomo-modes">
-                <button data-mode="focus" class="active">Focus</button>
-                <button data-mode="short">Short Break</button>
-                <button data-mode="long">Long Break</button>
-            </div>
-            <div class="pomo-ring">
-                <svg viewBox="0 0 120 120" aria-hidden="true">
-                    <circle class="pomo-track" cx="60" cy="60" r="52"></circle>
-                    <circle class="pomo-progress" id="pomoProgress" cx="60" cy="60" r="52"></circle>
-                </svg>
-                <div class="pomo-center">
-                    <div id="pomoTime" role="timer" aria-live="off">25:00</div>
-                    <div id="pomoLabel">Focus</div>
-                </div>
-            </div>
-            <div class="pomo-controls">
-                <button id="pomoStart">START</button>
-                <button id="pomoReset">RESET</button>
-                <button id="pomoSkip">SKIP</button>
-            </div>
-            <div class="pomo-count">🍅 Today: <span id="pomoCount">0</span> sessions</div>
         </div>
     </div>
 </div>
@@ -2737,6 +2668,135 @@ pomoRender();
 })();
 </script>
 
+<script>
+/* RED WINGS STATS (data from the NHL's public stats API) */
+(function(){
+    const TEAM = "DET";                 // change to another team's code (e.g. "TOR") to track them instead
+    const API = "https://api-web.nhle.com/v1";
+    const $ = id => document.getElementById(id);
+    let data = { standing:null, games:[], skaters:[], goalies:[] };
+    let tab = "points", timer = null;
+
+    const esc = s => String(s ?? "").replace(/[&<>"]/g, c => ({ "&":"&amp;", "<":"&lt;", ">":"&gt;", '"':"&quot;" }[c]));
+    const name = p => `${p.firstName?.default?.[0] || ""}. ${p.lastName?.default || ""}`;
+    const getJSON = url => fetch(url).then(r => { if (!r.ok) throw new Error(r.status); return r.json(); });
+
+    async function load(){
+        try {
+            const [standings, schedule, stats] = await Promise.all([
+                getJSON(`${API}/standings/now`),
+                getJSON(`${API}/club-schedule-season/${TEAM}/now`),
+                getJSON(`${API}/club-stats/${TEAM}/now`)
+            ]);
+            data.standing = (standings.standings || []).find(t => t.teamAbbrev?.default === TEAM) || null;
+            data.games = schedule.games || [];
+            data.skaters = stats.skaters || [];
+            data.goalies = stats.goalies || [];
+            render();
+            $("rwUpdated").textContent = "Updated " + new Date().toLocaleTimeString([], { hour:"numeric", minute:"2-digit" });
+        } catch(e){
+            console.error("Red Wings widget:", e);
+            if (!data.standing){
+                $("rwRecord").textContent = "Stats unavailable";
+                $("rwLeaders").innerHTML = `<div class="rw-error">Couldn't reach the NHL stats service. Check your internet connection. It will try again automatically.</div>`;
+            }
+        }
+        /* refresh every 30 seconds during a game, otherwise every 10 minutes */
+        clearTimeout(timer);
+        timer = setTimeout(load, liveGame() ? 30000 : 600000);
+    }
+
+    const isLive = g => ["LIVE", "CRIT"].includes(g.gameState);
+    const isDone = g => ["FINAL", "OFF"].includes(g.gameState);
+    const liveGame = () => data.games.find(isLive);
+
+    function gameCard(g, label, cls){
+        if (!g) return "";
+        const home = g.homeTeam, away = g.awayTeam;
+        const us = home.abbrev === TEAM ? home : away, them = home.abbrev === TEAM ? away : home;
+        const where = home.abbrev === TEAM ? "vs" : "@";
+        let result = "";
+        if (isLive(g)){
+            const p = g.periodDescriptor || {};
+            const per = p.periodType === "OT" ? "OT" : p.periodType === "SO" ? "Shootout" : p.number ? `Period ${p.number}` : "";
+            result = `${esc(per)}`;
+        } else if (isDone(g)){
+            const won = (us.score ?? 0) > (them.score ?? 0);
+            const extra = g.gameOutcome?.lastPeriodType && g.gameOutcome.lastPeriodType !== "REG" ? ` (${g.gameOutcome.lastPeriodType})` : "";
+            result = `<span class="${won ? "rw-w" : "rw-l"}">${won ? "W" : "L"}</span> ${us.score}–${them.score}${extra} ${where} ${esc(them.abbrev)}`;
+        } else {
+            const d = new Date(g.startTimeUTC);
+            result = d.toLocaleDateString([], { weekday:"short", month:"short", day:"numeric" }) + " · " +
+                     d.toLocaleTimeString([], { hour:"numeric", minute:"2-digit" });
+        }
+        const showScore = isLive(g) || isDone(g);
+        const side = t => `<img src="${esc(t.darkLogo || t.logo)}" alt="${esc(t.abbrev)}" title="${esc(t.abbrev)}">${showScore ? ` ${t.score ?? 0}` : ` ${esc(t.abbrev)}`}`;
+        return `<div class="rw-game ${cls || ""}">
+            <div class="rw-game-label">${label}</div>
+            <div class="rw-matchup">${side(away)} <span>${showScore ? "–" : "@"}</span> ${side(home)}</div>
+            <div class="rw-result">${result}</div>
+        </div>`;
+    }
+
+    function render(){
+        const s = data.standing;
+        if (s){
+            $("rwRecord").textContent = `${s.wins}-${s.losses}-${s.otLosses} · ${s.points} PTS`;
+            const streak = s.streakCode ? ` · Streak ${s.streakCode}${s.streakCount}` : "";
+            $("rwStanding").textContent = `${ordinal(s.divisionSequence)} in ${s.divisionName}${streak}`;
+            const diff = s.goalDifferential > 0 ? "+" + s.goalDifferential : s.goalDifferential;
+            $("rwTiles").innerHTML = [
+                ["GP", s.gamesPlayed], ["GF", s.goalFor], ["GA", s.goalAgainst], ["DIFF", diff],
+                ["L10", `${s.l10Wins}-${s.l10Losses}-${s.l10OtLosses}`],
+                ["HOME", `${s.homeWins}-${s.homeLosses}-${s.homeOtLosses}`],
+                ["ROAD", `${s.roadWins}-${s.roadLosses}-${s.roadOtLosses}`],
+                ["PTS %", (s.pointPctg ?? 0).toFixed(3).replace(/^0/, "")]
+            ].map(([k, v]) => `<div class="rw-tile"><b>${esc(v)}</b><span>${k}</span></div>`).join("");
+        }
+
+        const live = liveGame();
+        const last = [...data.games].reverse().find(isDone);
+        const next = data.games.find(g => g.gameState === "FUT" || g.gameState === "PRE");
+        $("rwGames").innerHTML = live
+            ? gameCard(live, "● Live now", "live")
+            : gameCard(last, "Last game") + gameCard(next, "Next game");
+
+        renderLeaders();
+    }
+
+    function renderLeaders(){
+        let rows = "";
+        if (tab === "goalies"){
+            rows = [...data.goalies].sort((a, b) => b.gamesPlayed - a.gamesPlayed).slice(0, 3).map(g => `
+                <div class="rw-row"><img src="${esc(g.headshot)}" alt="" onerror="this.style.visibility='hidden'">
+                    <span class="rw-name">${esc(name(g))}<span class="rw-pos">G</span></span>
+                    <span class="rw-stat">${g.wins}-${g.losses}-${g.overtimeLosses} · ${(g.savePercentage ?? 0).toFixed(3).replace(/^0/, "")} SV% · ${(g.goalsAgainstAverage ?? 0).toFixed(2)} GAA</span>
+                </div>`).join("");
+        } else {
+            const key = tab === "goals" ? "goals" : "points";
+            rows = [...data.skaters].sort((a, b) => b[key] - a[key] || b.points - a.points).slice(0, 5).map(p => `
+                <div class="rw-row"><img src="${esc(p.headshot)}" alt="" onerror="this.style.visibility='hidden'">
+                    <span class="rw-name">${esc(name(p))}<span class="rw-pos">${esc(p.positionCode)}</span></span>
+                    <span class="rw-stat">${p.goals}G ${p.assists}A</span>
+                    <span class="rw-big">${p[key]}</span>
+                </div>`).join("");
+        }
+        $("rwLeaders").innerHTML = rows || `<div class="rw-error" style="color:#d1d5db">No stats yet this season.</div>`;
+    }
+
+    function ordinal(n){ const s = ["th","st","nd","rd"], v = n % 100; return n + (s[(v - 20) % 10] || s[v] || s[0]); }
+
+    $("rwTabs").addEventListener("click", e => {
+        const b = e.target.closest("button[data-tab]");
+        if (!b) return;
+        tab = b.dataset.tab;
+        $("rwTabs").querySelectorAll("button").forEach(x => x.classList.toggle("on", x === b));
+        renderLeaders();
+    });
+
+    load();
+})();
+</script>
 
 <script>
 /* DETROIT LIONS STATS (data from ESPN's public sports API) */
